@@ -5,11 +5,18 @@ import 'package:http/http.dart' as http;
 import 'package:vecindad_stock/models/product.dart';
 
 class ProductsProvider extends ChangeNotifier {
+  ProductsProvider() {
+    getProducts();
+  }
   List<Product> _products;
+
+  Future<void> getProducts() async {
+    _products = await fetchProducts();
+  }
 
   Future<List<Product>> get transactions async {
     if (_products != null) return [..._products];
-    _products = await fetchProducts();
+    getProducts();
     return _products;
   }
 
@@ -17,16 +24,19 @@ class ProductsProvider extends ChangeNotifier {
     final response = await http
         .get("https://la-vecindad-c834d.firebaseio.com/products.json");
     final Map<String, dynamic> data = jsonDecode(response.body);
-    final List<Product> temp = data.entries.map((entry) => Product.fromJson(entry.key, entry.value)).toList();
+    final List<Product> temp = data.entries
+        .map((entry) => Product.fromJson(entry.key, entry.value))
+        .toList();
     return temp;
   }
 
-  Future<bool> createProduct() async {
+  Future<bool> createProduct(
+      String code, String name, double price, int stock) async {
     final product = Product(
-      code: "003",
-      name: "Doritos",
-      price: 150,
-      stock: 8,
+      code: code,
+      name: name,
+      price: price,
+      stock: stock,
     );
     final response = await http.post(
       "https://la-vecindad-c834d.firebaseio.com/products.json",
@@ -34,7 +44,7 @@ class ProductsProvider extends ChangeNotifier {
         product.toJson(),
       ),
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       product.id = jsonDecode(response.body)["name"];
       _products.add(product);
       notifyListeners();
@@ -42,6 +52,10 @@ class ProductsProvider extends ChangeNotifier {
     } else {
       return false;
     }
+  }
 
+  Product getProductByCode(String code) {
+    if (code == null) return null;
+    return _products.firstWhere((prod) => prod.code == code);
   }
 }

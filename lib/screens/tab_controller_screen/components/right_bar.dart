@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
 import 'package:vecindad_stock/components/search_bar.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/components/new_cart_dialog.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
@@ -64,7 +65,7 @@ class RightBar extends StatelessWidget {
             child: ActionButton(
               label: "Nueva Venta",
               onTap: () {
-                Provider.of<TransactionsProvider>(context, listen: false).createTransaction();
+                showDialog(context: context, builder: (context) => NewCartDialog());
               },
             ),
           ),

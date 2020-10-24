@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
-import 'package:vecindad_stock/providers/products_provider.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/products_page/components/create_product_dialog.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/products_page/components/products_list.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
 class ProductsPage extends StatelessWidget {
+  void showCreateProduct(BuildContext context) {
+    showDialog(context: context, builder: (context) => CreateProductDialog());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,8 +26,7 @@ class ProductsPage extends StatelessWidget {
                     label: "Agregar Producto",
                     fontSize: 20,
                     onTap: () {
-                      Provider.of<ProductsProvider>(context, listen: false)
-                          .createProduct();
+                      showCreateProduct(context);
                     },
                   ),
                 ),

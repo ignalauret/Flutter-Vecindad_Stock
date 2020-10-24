@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
-import 'package:vecindad_stock/utils/custom_styles.dart';
 
 class SideBar extends StatelessWidget {
   SideBar({this.selectPage, this.selectedIndex});
@@ -58,14 +57,56 @@ class SideBar extends StatelessWidget {
       ),
       child: Column(
         children: [
+          SizedBox(
+            height: 20,
+          ),
           Container(
             height: 200,
             alignment: Alignment.center,
             child: Image.asset("assets/img/logo.png"),
           ),
+          SizedBox(
+            height: 20,
+          ),
           _buildMenuItem(0, "Inicio", Icons.home_filled),
+          SizedBox(
+            height: 20,
+          ),
           _buildMenuItem(1, "Productos", Icons.local_grocery_store),
-          _buildMenuItem(1, "Movimientos", Icons.compare_arrows),
+          SizedBox(
+            height: 20,
+          ),
+          _buildMenuItem(2, "Movimientos", Icons.compare_arrows),
+          SizedBox(
+            height: 20,
+          ),
+          Spacer(),
+          Container(
+            height: 100,
+            width: double.infinity,
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Cerrar Sesión",
+                  style: TextStyle(
+                    color: CustomColors.kAccentColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),SizedBox(
+                  width: 10,
+                ),
+                Icon(
+                  Icons.exit_to_app,
+                  size: 25,
+                  color: CustomColors.kAccentColor,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

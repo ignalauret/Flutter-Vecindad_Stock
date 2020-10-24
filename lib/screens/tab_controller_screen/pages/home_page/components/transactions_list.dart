@@ -1,44 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:vecindad_stock/models/cash_transaction.dart';
+import 'package:vecindad_stock/providers/transactionsProvider.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
 class TransactionsList extends StatelessWidget {
-  final List<CashTransaction> transactions = [
-    CashTransaction(
-        date: DateTime.now(),
-        type: TransactionType.Sell,
-        employeeId: "0",
-        amount: 350),
-    CashTransaction(
-        date: DateTime.now(),
-        type: TransactionType.Extraction,
-        employeeId: "0",
-        amount: 5000),
-    CashTransaction(
-        date: DateTime.now(),
-        type: TransactionType.Sell,
-        employeeId: "0",
-        amount: 30),
-    CashTransaction(
-        date: DateTime.now(),
-        type: TransactionType.Deposit,
-        employeeId: "0",
-        amount: 500),
-    CashTransaction(
-        date: DateTime.now(),
-        type: TransactionType.Sell,
-        employeeId: "0",
-        amount: 1200),
-  ];
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) => TransactionListItem(transactions[index]),
-      itemCount: transactions.length,
+    return Consumer<TransactionsProvider>(
+      builder: (context, transactionData, _) {
+        return FutureBuilder<List<CashTransaction>>(
+          future: transactionData.transactions,
+          builder: (context, snapshot) {
+            if(snapshot.data == null) {
+              return Center(child: CircularProgressIndicator(),);
+            }
+            return ListView.builder(
+              itemBuilder: (context, index) => TransactionListItem(snapshot.data[index]),
+              itemCount: snapshot.data.length,
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -23,6 +23,7 @@ class HomePage extends StatelessWidget {
               style: CustomStyles.kTitleStyle,
             ),
           ),
+          SizedBox(height: 10,),
           Expanded(
             child: Container(
               child: TransactionsList(),

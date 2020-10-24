@@ -6,7 +6,7 @@ class CashTransaction {
   String id;
   final DateTime date;
   final TransactionType type;
-  final String employeeId;
+  final int employeeId;
   final double amount;
 
   CashTransaction({
@@ -17,8 +17,62 @@ class CashTransaction {
     @required this.amount,
   });
 
+  /* Json coding */
+
+  factory CashTransaction.fromJson(String id, Map<String, dynamic> json) {
+    TransactionType type;
+    switch (json["type"]) {
+      case "s":
+        type = TransactionType.Sell;
+        break;
+      case "e":
+        type = TransactionType.Extraction;
+        break;
+      case "p":
+        type = TransactionType.Payment;
+        break;
+      case "d":
+        type = TransactionType.Deposit;
+        break;
+    }
+    return CashTransaction(
+      id: id,
+      date: DateTime.parse(json["date"]),
+      type: type,
+      employeeId: json["eid"],
+      amount: json["amount"],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    String stringType;
+    switch (type) {
+      case TransactionType.Sell:
+        stringType = "s";
+        break;
+      case TransactionType.Extraction:
+        stringType = "e";
+        break;
+      case TransactionType.Payment:
+        stringType = "p";
+        break;
+      case TransactionType.Deposit:
+        stringType = "d";
+        break;
+    }
+    return {
+      "id": this.id,
+      "date": this.date.toString(),
+      "type": stringType,
+      "eid": employeeId,
+      "amount": amount
+    };
+  }
+
+  /* Methods */
+
   bool isIncome() {
-    switch(this.type) {
+    switch (this.type) {
       case TransactionType.Sell:
         return true;
         break;
@@ -29,14 +83,14 @@ class CashTransaction {
         return false;
         break;
       case TransactionType.Deposit:
-       return true;
+        return true;
         break;
     }
     return null;
   }
 
   String getType() {
-    switch(this.type) {
+    switch (this.type) {
       case TransactionType.Sell:
         return "Venta";
         break;

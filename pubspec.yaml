@@ -23,7 +23,7 @@ environment:
 dependencies:
   intl:
   provider:
-  peanut:
+  http:
   flutter:
     sdk: flutter
 

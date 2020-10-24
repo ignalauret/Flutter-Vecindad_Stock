@@ -1,3 +1,4 @@
+ls
 # vecindad_stock
 
 A new Flutter project.

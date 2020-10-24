@@ -4,17 +4,15 @@ import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 
 class ActionButton extends StatelessWidget {
-  ActionButton({this.label, this.onTap});
+  ActionButton({this.label, this.onTap, this.fontSize = 25});
   final String label;
   final Function onTap;
+  final double fontSize;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: Container(
-        height: 120,
-        width: 300,
-        margin: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: CustomColors.kAccentColor,
           borderRadius: BorderRadius.circular(Constants.kCardBorderRadius),
@@ -24,7 +22,7 @@ class ActionButton extends StatelessWidget {
           label,
           style: TextStyle(
             color: Colors.white,
-            fontSize: 25,
+            fontSize: fontSize,
             fontWeight: FontWeight.bold,
           ),
         ),

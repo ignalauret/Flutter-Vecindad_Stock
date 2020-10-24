@@ -35,6 +35,7 @@ class TransactionsProvider extends ChangeNotifier {
       ),
     );
     if(response.statusCode == 200) {
+      transaction.id = jsonDecode(response.body)["name"];
       _transactions.add(transaction);
       notifyListeners();
       return true;

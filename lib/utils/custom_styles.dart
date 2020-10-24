@@ -23,7 +23,7 @@ class CustomStyles {
   static const kSubtitleStyle = TextStyle(
     color: CustomColors.kGreyColor,
     fontSize: 16,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
   );
 
   static const kNormalStyle = TextStyle(

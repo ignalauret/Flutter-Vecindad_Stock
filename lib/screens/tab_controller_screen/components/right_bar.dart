@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
 import 'package:vecindad_stock/components/search_bar.dart';
-import 'package:vecindad_stock/providers/transactionsProvider.dart';
+import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
@@ -58,11 +58,15 @@ class RightBar extends StatelessWidget {
             child: SearchBar(() {}),
           ),
           Spacer(),
-          ActionButton(
-            label: "Nueva Venta",
-            onTap: () {
-              Provider.of<TransactionsProvider>(context, listen: false).createTransaction();
-            },
+          Container(
+            height: 150,
+            width: 300,
+            child: ActionButton(
+              label: "Nueva Venta",
+              onTap: () {
+                Provider.of<TransactionsProvider>(context, listen: false).createTransaction();
+              },
+            ),
           ),
         ],
       ),

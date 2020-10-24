@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/home_page/home_page.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_page/movements_page.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/products_page/products_page.dart';
 
 
@@ -17,6 +18,7 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
   final List<Widget> _pages = [
     HomePage(),
     ProductsPage(),
+    MovementsPage(),
   ];
 
 
@@ -55,7 +57,7 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
           Container(
             height: size.height,
             width: size.width * 0.25 - 3,
-            padding: const EdgeInsets.only(top: 50),
+            padding: const EdgeInsets.only(top: 50, bottom: 20),
             child: RightBar(),
           ),
         ],

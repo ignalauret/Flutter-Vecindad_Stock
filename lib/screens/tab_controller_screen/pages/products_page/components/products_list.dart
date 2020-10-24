@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:vecindad_stock/models/cash_transaction.dart';
-import 'package:vecindad_stock/providers/transactions_provider.dart';
+import 'package:vecindad_stock/models/product.dart';
+import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
-class TransactionsList extends StatelessWidget {
+class ProductsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<TransactionsProvider>(
+    return Consumer<ProductsProvider>(
       builder: (context, transactionData, _) {
-        return FutureBuilder<List<CashTransaction>>(
+        return FutureBuilder<List<Product>>(
           future: transactionData.transactions,
           builder: (context, snapshot) {
             if (snapshot.data == null) {
@@ -33,28 +31,28 @@ class TransactionsList extends StatelessWidget {
                       Container(
                         width: 90,
                         child: Text(
-                          "Hora",
+                          "Código",
                           textAlign: TextAlign.center,
                           style: CustomStyles.kSubtitleStyle,
                         ),
                       ),
                       Expanded(
                         child: Text(
-                          "Tipo",
+                          "Nombre",
                           textAlign: TextAlign.center,
                           style: CustomStyles.kSubtitleStyle,
                         ),
                       ),
                       Expanded(
                           child: Text(
-                        "Empleado",
+                        "Precio",
                         textAlign: TextAlign.center,
                         style: CustomStyles.kSubtitleStyle,
                       )),
                       Container(
                         width: 120,
                         child: Text(
-                          "Monto",
+                          "Stock",
                           textAlign: TextAlign.center,
                           style: CustomStyles.kSubtitleStyle,
                         ),
@@ -68,7 +66,7 @@ class TransactionsList extends StatelessWidget {
                 Expanded(
                   child: ListView.builder(
                     itemBuilder: (context, index) =>
-                        TransactionListItem(snapshot.data[index]),
+                        ProductsListItem(snapshot.data[index]),
                     itemCount: snapshot.data.length,
                   ),
                 ),
@@ -81,9 +79,9 @@ class TransactionsList extends StatelessWidget {
   }
 }
 
-class TransactionListItem extends StatelessWidget {
-  TransactionListItem(this.transaction);
-  final CashTransaction transaction;
+class ProductsListItem extends StatelessWidget {
+  ProductsListItem(this.product);
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -99,10 +97,10 @@ class TransactionListItem extends StatelessWidget {
             Container(
               width: 90,
               child: Text(
-                DateFormat("hh:mm").format(transaction.date),
+                product.code,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.black38,
+                  color: Colors.black,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -110,43 +108,24 @@ class TransactionListItem extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                transaction.getType(),
+                product.name,
                 textAlign: TextAlign.center,
                 style: CustomStyles.kNormalStyle,
               ),
             ),
             Expanded(
-                child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: AssetImage("assets/img/profile.jpeg"))),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Bruno",
-                  style: CustomStyles.kNormalStyle,
-                )
-              ],
-            )),
+              child: Text(
+                "\$" + product.price.toString(),
+                textAlign: TextAlign.center,
+                style: CustomStyles.kNormalStyle,
+              ),
+            ),
             Container(
               width: 120,
               child: Text(
-                transaction.isIncome()
-                    ? "+\$" + transaction.amount.toStringAsFixed(2)
-                    : "-\$" + transaction.amount.toStringAsFixed(2),
+                product.stock.toString(),
                 textAlign: TextAlign.center,
-                style: transaction.isIncome()
-                    ? CustomStyles.kIncomeStyle
-                    : CustomStyles.kExpenseStyle,
+                style: CustomStyles.kNormalStyle,
               ),
             ),
             SizedBox(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vecindad_stock/providers/transactionsProvider.dart';
+import 'package:vecindad_stock/providers/products_provider.dart';
+import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/tab_controller_screen.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<TransactionsProvider>(
           create: (context) => TransactionsProvider(),
+        ),
+        ChangeNotifierProvider<ProductsProvider>(
+          create: (context) => ProductsProvider(),
         ),
       ],
       child: MaterialApp(

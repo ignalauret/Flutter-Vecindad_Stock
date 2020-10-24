@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cbe8db85-52a3-42ea-a194-b9ef65ade06d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="ProjectId" id="1jId76i9EBBUuzwlohFSCVMBWv1" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="false" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="dart.analysis.tool.window.force.activate" value="true" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/img" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/lib" />
+    </key>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cbe8db85-52a3-42ea-a194-b9ef65ade06d" name="Default Changelist" comment="" />
+      <created>1603495369621</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1603495369621</updated>
+    </task>
+    <task id="LOCAL-00001" summary="First Commit">
+      <created>1603503500408</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1603503500408</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Products search bar">
+      <created>1603505230474</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1603505230474</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Firebase integration">
+      <created>1603508976621</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1603508976622</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Firebase integration">
+      <created>1603509040546</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1603509040546</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Cleaning">
+      <created>1603511201336</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1603511201336</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="First Commit" />
+    <MESSAGE value="Products search bar" />
+    <MESSAGE value="Firebase integration" />
+    <MESSAGE value="Cleaning" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleaning" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2918" y="798" width="374" height="565" key="#com.intellij.ide.util.MemberChooser" timestamp="1603503944055">
+      <screen x="1920" y="0" width="3840" height="2160" />
+    </state>
+    <state x="2918" y="798" width="374" height="565" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1603503944055" />
+    <state x="2526" y="635" width="1158" height="890" key="CommitChangelistDialog2" timestamp="1603511201232">
+      <screen x="1920" y="0" width="3840" height="2160" />
+    </state>
+    <state x="2526" y="635" width="1158" height="890" key="CommitChangelistDialog2/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1603511201232" />
+    <state x="2856" y="818" width="497" height="524" key="FileChooserDialogImpl" timestamp="1603503472547">
+      <screen x="1920" y="0" width="3840" height="2160" />
+    </state>
+    <state x="2856" y="818" width="497" height="524" key="FileChooserDialogImpl/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1603503472547" />
+    <state x="2755" y="695" width="700" height="770" key="RollbackChangesDialog" timestamp="1603509636178">
+      <screen x="1920" y="0" width="3840" height="2160" />
+    </state>
+    <state x="2755" y="695" width="700" height="770" key="RollbackChangesDialog/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1603509636178" />
+    <state x="2705" y="813" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1603511205032">
+      <screen x="1920" y="0" width="3840" height="2160" />
+    </state>
+    <state x="2705" y="813" width="800" height="535" key="Vcs.Push.Dialog.v2/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1603511205032" />
+    <state x="2857" y="986" width="505" height="189" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1603511154062">
+      <screen x="1920" y="0" width="3840" height="2160" />
+    </state>
+    <state x="2857" y="986" width="505" height="189" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1603511154062" />
+    <state x="2774" y="514" key="run.anything.popup" timestamp="1603503948129">
+      <screen x="1920" y="0" width="3840" height="2160" />
+    </state>
+    <state x="2774" y="514" key="run.anything.popup/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1603503948129" />
+    <state x="2773" y="508" width="672" height="681" key="search.everywhere.popup" timestamp="1603497815181">
+      <screen x="1920" y="0" width="3840" height="2160" />
+    </state>
+    <state x="2773" y="508" width="672" height="681" key="search.everywhere.popup/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1603497815181" />
+  </component>
+</project>

@@ -11,14 +11,14 @@ class EmployeeSelector extends StatefulWidget {
 
 class _EmployeeSelectorState extends State<EmployeeSelector> {
   final List<Employee> employers = [
-    Employee(id: 0, name: "Bruno", imageUrl: "assets/img/profile.jpeg"),
-    Employee(id: 1, name: "Emi", imageUrl: "assets/img/profile.jpeg"),
-    Employee(id: 2, name: "Mati", imageUrl: "assets/img/profile.jpeg"),
+    Employee(id: "A", name: "Bruno", imageUrl: "assets/img/profile.jpeg"),
+    Employee(id: "B", name: "Emi", imageUrl: "assets/img/profile.jpeg"),
+    Employee(id: "C", name: "Mati", imageUrl: "assets/img/profile.jpeg"),
   ];
 
-  int selectedId = 0;
+  String selectedId = "A";
 
-  void selectEmployer(int id) {
+  void selectEmployer(String id) {
     setState(() {
       selectedId = id;
     });

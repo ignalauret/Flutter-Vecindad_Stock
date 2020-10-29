@@ -17,28 +17,54 @@ class RightBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Container(
-            height: 100,
-            width: double.infinity,
-            child: Row(
-              children: [
-                Expanded(
-                  child: AccountAmountCard(
-                    label: "Caja:",
-                    amount: 500,
-                  ),
+          Consumer<TransactionsProvider>(
+            builder: (context, transactionsData, _) {
+              return Container(
+                height: 100,
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FutureBuilder(
+                        future: transactionsData.cash,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return AccountAmountCard(
+                              label: "Caja:",
+                              amount: snapshot.data,
+                            );
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: FutureBuilder(
+                        future: transactionsData.cash,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return AccountAmountCard(
+                              label: "Hoy:",
+                              amount: snapshot.data,
+                            );
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: AccountAmountCard(
-                    label: "Hoy:",
-                    amount: 200,
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
           SizedBox(
             height: 30,
@@ -65,7 +91,8 @@ class RightBar extends StatelessWidget {
             child: ActionButton(
               label: "Nueva Venta",
               onTap: () {
-                showDialog(context: context, builder: (context) => NewCartDialog());
+                showDialog(
+                    context: context, builder: (context) => NewCartDialog());
               },
             ),
           ),

@@ -2,8 +2,8 @@ class Product {
   String id;
   final String code;
   final String name;
-  final double price;
-  final int stock;
+  double price;
+  int stock;
 
   Product({
     this.id,

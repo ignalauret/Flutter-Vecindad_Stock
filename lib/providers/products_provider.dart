@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:vecindad_stock/models/product.dart';
+import 'package:vecindad_stock/utils/constants.dart';
 
 class ProductsProvider extends ChangeNotifier {
   ProductsProvider() {
@@ -21,9 +22,9 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   Future<List<Product>> fetchProducts() async {
-    final response = await http
-        .get("https://la-vecindad-c834d.firebaseio.com/products.json");
+    final response = await http.get(Constants.kApiPath + "/products.json");
     final Map<String, dynamic> data = jsonDecode(response.body);
+    if (data == null) return [];
     final List<Product> temp = data.entries
         .map((entry) => Product.fromJson(entry.key, entry.value))
         .toList();
@@ -39,7 +40,7 @@ class ProductsProvider extends ChangeNotifier {
       stock: stock,
     );
     final response = await http.post(
-      "https://la-vecindad-c834d.firebaseio.com/products.json",
+      Constants.kApiPath + "/products.json",
       body: jsonEncode(
         product.toJson(),
       ),
@@ -56,6 +57,44 @@ class ProductsProvider extends ChangeNotifier {
 
   Product getProductByCode(String code) {
     if (code == null) return null;
-    return _products.firstWhere((prod) => prod.code == code);
+    return _products.firstWhere(
+      (prod) => prod.code == code,
+      orElse: () => null,
+    );
+  }
+
+  Product getProductById(String id) {
+    if (id == null) return null;
+    return _products.firstWhere((prod) => prod.id == id);
+  }
+
+  void updateStock(String id, int stock) {
+    getProductById(id).stock = stock;
+    notifyListeners();
+  }
+
+  Future<bool> sellProduct(String id, int amount) async {
+    final int newStock = getProductById(id).stock - amount;
+    final response = await http.patch(
+      Constants.kApiPath + "/products/$id.json",
+      body: jsonEncode(
+        {"stock": newStock},
+      ),
+    );
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      updateStock(id, newStock);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> sellProducts(List<String> productIds, List<int> amounts) async {
+    for (int i = 0; i < productIds.length; i++) {
+      if (!await sellProduct(productIds[i], amounts[i])) return false;
+    }
+    return true;
   }
 }

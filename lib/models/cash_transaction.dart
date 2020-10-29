@@ -6,8 +6,9 @@ class CashTransaction {
   String id;
   final DateTime date;
   final TransactionType type;
-  final int employeeId;
+  final String employeeId;
   final double amount;
+  final Map<String, int> products;
 
   CashTransaction({
     this.id,
@@ -15,15 +16,18 @@ class CashTransaction {
     @required this.type,
     @required this.employeeId,
     @required this.amount,
+    this.products,
   });
 
-  /* Json coding */
+  /* Parsers */
 
   factory CashTransaction.fromJson(String id, Map<String, dynamic> json) {
     TransactionType type;
+    Map<String, int> products;
     switch (json["type"]) {
       case "s":
         type = TransactionType.Sell;
+        products = Map<String, int>.from(json["products"]);
         break;
       case "e":
         type = TransactionType.Extraction;
@@ -41,6 +45,7 @@ class CashTransaction {
       type: type,
       employeeId: json["eid"],
       amount: json["amount"],
+      products: products,
     );
   }
 
@@ -64,8 +69,9 @@ class CashTransaction {
       "id": this.id,
       "date": this.date.toString(),
       "type": stringType,
-      "eid": employeeId,
-      "amount": amount
+      "eid": this.employeeId,
+      "amount": this.amount,
+      "products": this.products,
     };
   }
 

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
-import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/home_page/components/transactions_list.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_page/components/create_transaction_dialog.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
 class MovementsPage extends StatelessWidget {
@@ -23,8 +22,7 @@ class MovementsPage extends StatelessWidget {
                     label: "Agregar Movimiento",
                     fontSize: 20,
                     onTap: () {
-                      Provider.of<TransactionsProvider>(context, listen: false)
-                          .createTransaction();
+                      showDialog(context: context, builder: (context) => CreateTransactionDialog());
                     },
                   ),
                 ),

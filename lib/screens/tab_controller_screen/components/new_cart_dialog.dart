@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
+import 'package:vecindad_stock/models/cash_transaction.dart';
 import 'package:vecindad_stock/models/product.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
+import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/components/products_cart_list.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
@@ -16,6 +18,7 @@ class NewCartDialog extends StatefulWidget {
 class _NewCartDialogState extends State<NewCartDialog> {
   final List<Product> products = [];
   final List<int> amounts = [];
+  bool codeError = false;
 
   final codeController = TextEditingController();
   final amountController = TextEditingController(text: "1");
@@ -32,10 +35,15 @@ class _NewCartDialogState extends State<NewCartDialog> {
     final product =
         context.read<ProductsProvider>().getProductByCode(codeController.text);
     setState(() {
-      products.add(product);
-      amounts.add(int.parse(amountController.text));
-      codeController.clear();
-      amountController.text = "1";
+      // Check if product exists
+      if (product == null) {
+        codeError = true;
+      } else {
+        products.add(product);
+        amounts.add(int.parse(amountController.text));
+        codeController.clear();
+        amountController.text = "1";
+      }
     });
   }
 
@@ -72,7 +80,6 @@ class _NewCartDialogState extends State<NewCartDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 50,
                   width: 200,
                   alignment: Alignment.center,
                   child: TextField(
@@ -80,15 +87,20 @@ class _NewCartDialogState extends State<NewCartDialog> {
                     controller: codeController,
                     decoration: InputDecoration(
                       labelText: "Código",
+                      errorText: codeError ? "Código inválido" : null,
                     ),
                     onEditingComplete: submit,
+                    onChanged: (_) {
+                      setState(() {
+                        codeError = false;
+                      });
+                    },
                   ),
                 ),
                 SizedBox(
                   width: 50,
                 ),
                 Container(
-                  height: 50,
                   width: 200,
                   alignment: Alignment.center,
                   child: TextField(
@@ -131,7 +143,8 @@ class _NewCartDialogState extends State<NewCartDialog> {
                   : Center(
                       child: Text(
                         "Carrito vacío. Ingresa un código para agregar un producto.",
-                        style: CustomStyles.kSubtitleStyle.copyWith(fontSize: 20),
+                        style:
+                            CustomStyles.kSubtitleStyle.copyWith(fontSize: 20),
                       ),
                     ),
             ),
@@ -164,7 +177,36 @@ class _NewCartDialogState extends State<NewCartDialog> {
                     child: ActionButton(
                       label: "Finalizar",
                       fontSize: 25,
-                      onTap: () {},
+                      onTap: () {
+                        final transactionsData =
+                            context.read<TransactionsProvider>();
+                        final List<MapEntry<String, int>> cartProducts = [];
+                        for (int i = 0; i < products.length; i++) {
+                          cartProducts
+                              .add(MapEntry(products[i].id, amounts[i]));
+                        }
+                        transactionsData
+                            .createTransaction(
+                          DateTime.now(),
+                          TransactionType.Sell,
+                          "A",
+                          totalSum,
+                          Map<String, int>.fromEntries(cartProducts),
+                        )
+                            .then((success) {
+                          if (success) {
+                            context
+                                .read<ProductsProvider>()
+                                .sellProducts(
+                                  products.map((prod) => prod.id).toList(),
+                                  amounts,
+                                )
+                                .then((success) {
+                              Navigator.of(context).pop();
+                            });
+                          }
+                        });
+                      },
                     ),
                   ),
                 ],

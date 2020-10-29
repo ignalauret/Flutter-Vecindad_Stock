@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class Employee {
-  int id;
+  String id;
   final String name;
   final String imageUrl;
 

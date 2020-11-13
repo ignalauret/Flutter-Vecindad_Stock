@@ -29,28 +29,29 @@ class ProductsList extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Container(
-                        width: 90,
+                        width: 110,
                         child: Text(
                           "Código",
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                           style: CustomStyles.kSubtitleStyle,
                         ),
                       ),
                       Expanded(
                         child: Text(
                           "Nombre",
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                           style: CustomStyles.kSubtitleStyle,
                         ),
                       ),
-                      Expanded(
+                      Container(
+                        width: 100,
                           child: Text(
                         "Precio",
                         textAlign: TextAlign.center,
                         style: CustomStyles.kSubtitleStyle,
                       )),
                       Container(
-                        width: 120,
+                        width: 90,
                         child: Text(
                           "Stock",
                           textAlign: TextAlign.center,
@@ -58,7 +59,7 @@ class ProductsList extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 150,
+                        width: 100,
                       ),
                     ],
                   ),
@@ -95,10 +96,10 @@ class ProductsListItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
-              width: 90,
+              width: 110,
               child: Text(
                 product.code,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 16,
@@ -109,11 +110,12 @@ class ProductsListItem extends StatelessWidget {
             Expanded(
               child: Text(
                 product.name,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: CustomStyles.kNormalStyle,
               ),
             ),
-            Expanded(
+            Container(
+              width: 100,
               child: Text(
                 "\$" + product.price.toString(),
                 textAlign: TextAlign.center,
@@ -121,15 +123,12 @@ class ProductsListItem extends StatelessWidget {
               ),
             ),
             Container(
-              width: 120,
+              width: 90,
               child: Text(
                 product.stock.toString(),
                 textAlign: TextAlign.center,
-                style: CustomStyles.kNormalStyle,
+                style: CustomStyles.kNormalStyle.copyWith(color: product.stock < 5 ? Colors.red : Colors.black),
               ),
-            ),
-            SizedBox(
-              width: 50,
             ),
             Container(
               width: 100,

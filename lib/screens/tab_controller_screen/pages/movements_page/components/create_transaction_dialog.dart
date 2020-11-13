@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
 import 'package:vecindad_stock/models/cash_transaction.dart';
+import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
 class CreateTransactionDialog extends StatefulWidget {
   @override
-  _CreateTransactionDialogState createState() => _CreateTransactionDialogState();
+  _CreateTransactionDialogState createState() =>
+      _CreateTransactionDialogState();
 }
 
 class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
@@ -45,14 +48,16 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
         margin: const EdgeInsets.all(20),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: type == selectedType ? CustomColors.kAccentColor : Colors.white,
+          color:
+              type == selectedType ? CustomColors.kAccentColor : Colors.white,
           borderRadius: BorderRadius.circular(Constants.kCardBorderRadius),
           border: Border.all(color: CustomColors.kAccentColor, width: 2),
         ),
         child: Text(
-          type.toString().split(".").last,
+          kTransactionTypesNames[type],
           style: CustomStyles.kTitleStyle.copyWith(
-            color: type == selectedType ? Colors.white : CustomColors.kAccentColor,
+            color:
+                type == selectedType ? Colors.white : CustomColors.kAccentColor,
           ),
         ),
       ),
@@ -79,19 +84,22 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
         ],
       ),
       content: Container(
-        height: 350,
-        width: 700,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
                 children: TransactionType.values
                     .map((type) => _buildTypeSelector(type))
                     .toList(),
               ),
             ),
+            SizedBox(
+              height: 50,
+            ),
             Container(
-              height: 100,
               width: 300,
               child: _buildFieldInput("Monto", priceController),
             ),
@@ -106,7 +114,20 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
           child: ActionButton(
             label: "Agregar",
             fontSize: 25,
-            onTap: () {},
+            onTap: () {
+              context
+                  .read<TransactionsProvider>()
+                  .createTransaction(
+                    DateTime.now(),
+                    selectedType,
+                    "0",
+                    double.parse(priceController.text),
+                    null,
+                  )
+                  .then(
+                    (value) => Navigator.of(context).pop(),
+                  );
+            },
           ),
         ),
       ],

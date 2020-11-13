@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 
 enum TransactionType { Sell, Extraction, Payment, Deposit }
 
+const Map<TransactionType, String> kTransactionTypesNames = {
+  TransactionType.Deposit: "Depósito",
+  TransactionType.Extraction: "Extracción",
+  TransactionType.Payment: "Pago",
+  TransactionType.Sell: "Venta",
+};
+
 class CashTransaction {
   String id;
   final DateTime date;
@@ -96,20 +103,6 @@ class CashTransaction {
   }
 
   String getType() {
-    switch (this.type) {
-      case TransactionType.Sell:
-        return "Venta";
-        break;
-      case TransactionType.Extraction:
-        return "Extracción";
-        break;
-      case TransactionType.Payment:
-        return "Pago";
-        break;
-      case TransactionType.Deposit:
-        return "Depósito";
-        break;
-    }
-    return null;
+    return kTransactionTypesNames[this.type];
   }
 }

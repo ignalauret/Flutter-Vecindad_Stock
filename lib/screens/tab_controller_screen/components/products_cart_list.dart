@@ -21,39 +21,34 @@ class ProductsCartList extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Container(
-                width: 90,
-                alignment: Alignment.center,
+                width: 110,
                 child: Text(
                   "Código",
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                   style: CustomStyles.kSubtitleStyle,
                 ),
               ),
               Expanded(
-                child: Center(
-                  child: Text(
-                    "Nombre",
-                    textAlign: TextAlign.center,
-                    style: CustomStyles.kSubtitleStyle,
-                  ),
+                child: Text(
+                  "Nombre",
+                  textAlign: TextAlign.left,
+                  style: CustomStyles.kSubtitleStyle,
                 ),
               ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    "Precio",
-                    textAlign: TextAlign.center,
-                    style: CustomStyles.kSubtitleStyle,
-                  ),
+              Container(
+                width: 100,
+                child: Text(
+                  "Precio",
+                  textAlign: TextAlign.center,
+                  style: CustomStyles.kSubtitleStyle,
                 ),
               ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    "Cantidad",
-                    textAlign: TextAlign.center,
-                    style: CustomStyles.kSubtitleStyle,
-                  ),
+              Container(
+                width: 90,
+                child: Text(
+                  "Cantidad",
+                  textAlign: TextAlign.center,
+                  style: CustomStyles.kSubtitleStyle,
                 ),
               ),
             ],
@@ -86,11 +81,10 @@ class ProductsCartListItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
-              width: 90,
-              alignment: Alignment.center,
+              width: 110,
               child: Text(
                 product.code,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 16,
@@ -99,30 +93,26 @@ class ProductsCartListItem extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Center(
-                child: Text(
-                  product.name,
-                  textAlign: TextAlign.center,
-                  style: CustomStyles.kNormalStyle,
-                ),
+              child: Text(
+                product.name,
+                textAlign: TextAlign.left,
+                style: CustomStyles.kNormalStyle,
               ),
             ),
-            Expanded(
-              child: Center(
-                child: Text(
-                  "\$" + product.price.toString(),
-                  textAlign: TextAlign.center,
-                  style: CustomStyles.kNormalStyle,
-                ),
+            Container(
+              width: 100,
+              child: Text(
+                "\$" + product.price.toString(),
+                textAlign: TextAlign.center,
+                style: CustomStyles.kNormalStyle,
               ),
             ),
-            Expanded(
-              child: Center(
-                child: Text(
-                  amount.toString(),
-                  textAlign: TextAlign.center,
-                  style: CustomStyles.kNormalStyle,
-                ),
+            Container(
+              width: 90,
+              child: Text(
+                amount.toString(),
+                textAlign: TextAlign.center,
+                style: CustomStyles.kNormalStyle,
               ),
             ),
           ],

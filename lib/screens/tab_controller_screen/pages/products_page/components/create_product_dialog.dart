@@ -8,7 +8,7 @@ class CreateProductDialog extends StatelessWidget {
   final codeController = TextEditingController();
   final nameController = TextEditingController();
   final priceController = TextEditingController();
-  final stockController = TextEditingController();
+  final stockController = TextEditingController(text: "0");
 
   Widget _buildFieldInput(String label, TextEditingController controller) {
     return Container(
@@ -74,7 +74,7 @@ class CreateProductDialog extends StatelessWidget {
                 Container(
                   height: 100,
                   width: 150,
-                  child: _buildFieldInput("Stock (opcional)", stockController),
+                  child: _buildFieldInput("Stock Inicial", stockController),
                 ),
               ],
             ),

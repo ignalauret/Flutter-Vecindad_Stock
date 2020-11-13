@@ -68,32 +68,45 @@ class ProductsProvider extends ChangeNotifier {
     return _products.firstWhere((prod) => prod.id == id);
   }
 
-  void updateStock(String id, int stock) {
+  void updateLocalStock(String id, int stock) {
     getProductById(id).stock = stock;
     notifyListeners();
   }
 
-  Future<bool> sellProduct(String id, int amount) async {
-    final int newStock = getProductById(id).stock - amount;
+  Future<bool> updateStock(String pid, int amount) async {
+    final int newStock = getProductById(pid).stock + amount;
     final response = await http.patch(
-      Constants.kApiPath + "/products/$id.json",
+      Constants.kApiPath + "/products/$pid.json",
       body: jsonEncode(
         {"stock": newStock},
       ),
     );
-    print(response.body);
-    print(response.statusCode);
     if (response.statusCode == 200) {
-      updateStock(id, newStock);
+      updateLocalStock(pid, newStock);
       return true;
     } else {
       return false;
     }
   }
 
+  Future<bool> sellProduct(String pid, int amount) async {
+    return updateStock(pid, -1 * amount);
+  }
+
   Future<bool> sellProducts(List<String> productIds, List<int> amounts) async {
     for (int i = 0; i < productIds.length; i++) {
       if (!await sellProduct(productIds[i], amounts[i])) return false;
+    }
+    return true;
+  }
+
+  Future<bool> addStock(String pid, int amount) async {
+    return await updateStock(pid, amount);
+  }
+
+  Future<bool> addStocks(List<String> pids, List<int> newStocks) async {
+    for (int i = 0; i < pids.length; i++) {
+      if (!await addStock(pids[i], newStocks[i])) return false;
     }
     return true;
   }

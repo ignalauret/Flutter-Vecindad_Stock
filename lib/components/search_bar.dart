@@ -3,7 +3,7 @@ import 'package:vecindad_stock/utils/constants.dart';
 
 class SearchBar extends StatelessWidget {
   SearchBar(this.onChange);
-  final Function onChange;
+  final Function(String) onChange;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,6 +23,7 @@ class SearchBar extends StatelessWidget {
           SizedBox(width: 10),
           Expanded(
             child: TextField(
+              onChanged: onChange,
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 18,

@@ -10,9 +10,9 @@ class ProductsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ProductsProvider>(
-      builder: (context, transactionData, _) {
+      builder: (context, productsData, _) {
         return FutureBuilder<List<Product>>(
-          future: transactionData.transactions,
+          future: productsData.products,
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Center(

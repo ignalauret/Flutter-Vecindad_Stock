@@ -15,10 +15,15 @@ class ProductsProvider extends ChangeNotifier {
     _products = await fetchProducts();
   }
 
-  Future<List<Product>> get transactions async {
+  Future<List<Product>> get products async {
     if (_products != null) return [..._products];
     getProducts();
     return _products;
+  }
+
+  List<Product> getSearchedProducts(String search) {
+    if(search.isEmpty) return [];
+    return _products.where((prod) => prod.name.contains(search)).toList();
   }
 
   Future<List<Product>> fetchProducts() async {

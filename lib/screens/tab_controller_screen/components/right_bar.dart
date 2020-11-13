@@ -3,13 +3,28 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
 import 'package:vecindad_stock/components/search_bar.dart';
+import 'package:vecindad_stock/models/product.dart';
+import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/components/new_cart_dialog.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
-class RightBar extends StatelessWidget {
+class RightBar extends StatefulWidget {
+  @override
+  _RightBarState createState() => _RightBarState();
+}
+
+class _RightBarState extends State<RightBar> {
+  String search = "";
+
+  void searchFor(String value) {
+    setState(() {
+      search = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -82,9 +97,15 @@ class RightBar extends StatelessWidget {
           Container(
             height: 60,
             width: double.infinity,
-            child: SearchBar(() {}),
+            child: SearchBar(searchFor),
           ),
-          Spacer(),
+          Expanded(
+            child: SearchedProductsList(
+              context.select<ProductsProvider, List<Product>>(
+                (data) => data.getSearchedProducts(search),
+              ),
+            ),
+          ),
           Container(
             height: 150,
             width: 300,
@@ -135,10 +156,65 @@ class AccountAmountCard extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 "\$" + amount.toStringAsFixed(2),
-                style: amount >= 0.0 ? CustomStyles.kIncomeStyle : CustomStyles.kExpenseStyle,
+                style: amount >= 0.0
+                    ? CustomStyles.kIncomeStyle
+                    : CustomStyles.kExpenseStyle,
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class SearchedProductsList extends StatelessWidget {
+  SearchedProductsList(this.products);
+  final List<Product> products;
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemBuilder: (context, index) => ProductCard(products[index]),
+      itemCount: products.length,
+    );
+  }
+}
+
+class ProductCard extends StatelessWidget {
+  ProductCard(this.product);
+  final Product product;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constants.kCardBorderRadius / 2)),
+      child: ListTile(
+        title: Text(
+          product.name,
+          style: CustomStyles.kNormalStyle,
+        ),
+        subtitle: Text(
+          "#" + product.code,
+          style: CustomStyles.kSubtitleStyle,
+        ),
+        trailing: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "\$" + product.price.toString(),
+                style: CustomStyles.kNormalStyle,
+              ),
+              Text(
+                product.stock.toString(),
+                style: CustomStyles.kSubtitleStyle,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:vecindad_stock/models/cash_transaction.dart';
+import 'package:vecindad_stock/models/employee.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 
 class TransactionsProvider extends ChangeNotifier {
@@ -37,11 +38,11 @@ class TransactionsProvider extends ChangeNotifier {
   }
 
   Future<bool> createTransaction(DateTime date, TransactionType type,
-      String eid, double amount, Map<String, int> products) async {
+       double amount, Map<String, int> products) async {
     final transaction = CashTransaction(
       date: date,
       type: type,
-      employeeId: eid,
+      employeeId: selectedEmployee,
       amount: amount,
       products: products,
     );
@@ -97,5 +98,38 @@ class TransactionsProvider extends ChangeNotifier {
     } else {
       return false;
     }
+  }
+
+  /* Employees */
+  String selectedEmployee = "A";
+
+  List<Employee> _employees;
+
+  Future<List<Employee>> get employees async {
+    if (_employees == null) await getEmployees();
+    return [..._employees];
+  }
+
+  Future<void> getEmployees() async {
+    _employees = await fetchEmployees();
+  }
+
+  Future<List<Employee>> fetchEmployees() async {
+    final response = await http.get(Constants.kApiPath + "/employees.json");
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    if (data == null) return [];
+    final List<Employee> temp = data.entries
+        .map((entry) => Employee.fromJson(entry.key, entry.value))
+        .toList();
+    return temp;
+  }
+
+  void selectEmployee(String id) {
+    selectedEmployee = id;
+    notifyListeners();
+  }
+
+  Employee getEmployeeById(String id) {
+    return _employees.firstWhere((employee) => employee.id == id);
   }
 }

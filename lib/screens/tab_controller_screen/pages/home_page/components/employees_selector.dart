@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:vecindad_stock/models/employee.dart';
+import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
@@ -10,30 +12,29 @@ class EmployeeSelector extends StatefulWidget {
 }
 
 class _EmployeeSelectorState extends State<EmployeeSelector> {
-  final List<Employee> employers = [
-    Employee(id: "A", name: "Bruno", imageUrl: "assets/img/profile.jpeg"),
-    Employee(id: "B", name: "Emi", imageUrl: "assets/img/profile.jpeg"),
-    Employee(id: "C", name: "Mati", imageUrl: "assets/img/profile.jpeg"),
-  ];
-
-  String selectedId = "A";
-
-  void selectEmployer(String id) {
-    setState(() {
-      selectedId = id;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemBuilder: (context, index) => EmployeeItem(
-        employee: employers[index],
-        selected: employers[index].id == selectedId,
-        select: selectEmployer,
-      ),
-      itemCount: employers.length,
+    final employeesData = context.watch<TransactionsProvider>();
+    final selectedId = employeesData.selectedEmployee;
+    return FutureBuilder<List<Employee>>(
+      future: employeesData.employees,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) => EmployeeItem(
+              employee: snapshot.data[index],
+              selected: snapshot.data[index].id == selectedId,
+              select: employeesData.selectEmployee,
+            ),
+            itemCount: snapshot.data.length,
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 }

@@ -194,7 +194,6 @@ class _NewCartDialogState extends State<NewCartDialog> {
                             .createTransaction(
                           DateTime.now(),
                           TransactionType.Sell,
-                          "A",
                           totalSum,
                           Map<String, int>.fromEntries(cartProducts),
                         )

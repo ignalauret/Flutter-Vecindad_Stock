@@ -120,7 +120,6 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
                   .createTransaction(
                     DateTime.now(),
                     selectedType,
-                    "0",
                     double.parse(priceController.text),
                     null,
                   )

@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/models/cash_transaction.dart';
+import 'package:vecindad_stock/models/employee.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
@@ -87,6 +88,8 @@ class TransactionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final employee = context.select<TransactionsProvider, Employee>(
+        (data) => data.getEmployeeById(transaction.employeeId));
     return Card(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Constants.kCardBorderRadius)),
@@ -126,13 +129,13 @@ class TransactionListItem extends StatelessWidget {
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                          image: AssetImage("assets/img/profile.jpeg"))),
+                          image: AssetImage(employee.imageUrl))),
                 ),
                 SizedBox(
                   width: 10,
                 ),
                 Text(
-                  "Bruno",
+                  employee.name,
                   style: CustomStyles.kNormalStyle,
                 )
               ],

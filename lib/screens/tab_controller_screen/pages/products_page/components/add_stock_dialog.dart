@@ -29,8 +29,13 @@ class _AddStockDialogState extends State<AddStockDialog> {
       if (product == null) {
         codeError = true;
       } else {
-        products.add(product);
-        amounts.add(int.parse(amountController.text));
+        if (products.contains(product)) {
+          final index = products.indexOf(product);
+          amounts[index] = amounts[index] + int.parse(amountController.text);
+        } else {
+          products.add(product);
+          amounts.add(int.parse(amountController.text));
+        }
         codeController.clear();
         amountController.text = "1";
       }

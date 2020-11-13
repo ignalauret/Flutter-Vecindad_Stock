@@ -102,6 +102,11 @@ class CashTransaction {
     return null;
   }
 
+  double getRealAmount() {
+    if(isIncome()) return amount;
+    return -1 * amount;
+  }
+
   String getType() {
     return kTransactionTypesNames[this.type];
   }

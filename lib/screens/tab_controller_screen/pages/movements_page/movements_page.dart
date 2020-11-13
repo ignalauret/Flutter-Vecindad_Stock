@@ -22,14 +22,18 @@ class MovementsPage extends StatelessWidget {
                     label: "Agregar Movimiento",
                     fontSize: 20,
                     onTap: () {
-                      showDialog(context: context, builder: (context) => CreateTransactionDialog());
+                      showDialog(
+                          context: context,
+                          builder: (context) => CreateTransactionDialog());
                     },
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 30,),
+          SizedBox(
+            height: 30,
+          ),
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -42,7 +46,10 @@ class MovementsPage extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              child: TransactionsList(),
+              child: TransactionsList(
+                sortDate: null,
+                showDate: true,
+              ),
             ),
           ),
         ],

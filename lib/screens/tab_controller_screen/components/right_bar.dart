@@ -46,7 +46,7 @@ class RightBar extends StatelessWidget {
                     ),
                     Expanded(
                       child: FutureBuilder(
-                        future: transactionsData.cash,
+                        future: transactionsData.todayCash,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return AccountAmountCard(
@@ -135,7 +135,7 @@ class AccountAmountCard extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 "\$" + amount.toStringAsFixed(2),
-                style: CustomStyles.kIncomeStyle,
+                style: amount >= 0.0 ? CustomStyles.kIncomeStyle : CustomStyles.kExpenseStyle,
               ),
             ),
           ],

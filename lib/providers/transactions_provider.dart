@@ -5,17 +5,19 @@ import 'package:http/http.dart' as http;
 import 'package:vecindad_stock/models/cash_transaction.dart';
 import 'package:vecindad_stock/models/employee.dart';
 import 'package:vecindad_stock/utils/constants.dart';
+import 'package:vecindad_stock/utils/time_utils.dart';
 
 class TransactionsProvider extends ChangeNotifier {
   TransactionsProvider() {
     getTransactions();
     getCash();
+    getEmployees();
   }
   List<CashTransaction> _transactions;
 
   Future<List<CashTransaction>> get transactions async {
     if (_transactions == null) await getTransactions();
-    return _transactions;
+    return [..._transactions];
   }
 
   Future<void> getTransactions() async {
@@ -38,7 +40,7 @@ class TransactionsProvider extends ChangeNotifier {
   }
 
   Future<bool> createTransaction(DateTime date, TransactionType type,
-       double amount, Map<String, int> products) async {
+      double amount, Map<String, int> products) async {
     final transaction = CashTransaction(
       date: date,
       type: type,
@@ -72,6 +74,15 @@ class TransactionsProvider extends ChangeNotifier {
   Future<double> get cash async {
     if (_cash == null) await getCash();
     return _cash;
+  }
+
+  Future<double> get todayCash async {
+    if (_transactions == null) await getTransactions();
+    return _transactions.fold<double>(
+        0.0,
+        (prev, tran) => TimeUtils.isSameDay(DateTime.now(), tran.date)
+            ? prev + tran.getRealAmount()
+            : prev);
   }
 
   Future<void> getCash() async {

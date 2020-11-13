@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
           SizedBox(height: 10,),
           Expanded(
             child: Container(
-              child: TransactionsList(),
+              child: TransactionsList(sortDate: DateTime.now(),),
             ),
           ),
         ],

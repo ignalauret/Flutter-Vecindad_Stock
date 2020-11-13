@@ -8,8 +8,12 @@ import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
+import 'package:vecindad_stock/utils/time_utils.dart';
 
 class TransactionsList extends StatelessWidget {
+  TransactionsList({this.sortDate, this.showDate = false});
+  final DateTime sortDate;
+  final bool showDate;
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionsProvider>(
@@ -17,11 +21,17 @@ class TransactionsList extends StatelessWidget {
         return FutureBuilder<List<CashTransaction>>(
           future: transactionData.transactions,
           builder: (context, snapshot) {
-            if (snapshot.data == null) {
+            if (!snapshot.hasData) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
+            final List<CashTransaction> sortedTransactions = snapshot.data;
+            if (sortDate != null)
+              sortedTransactions.retainWhere(
+                (tran) => TimeUtils.isSameDay(tran.date, sortDate),
+              );
+            sortedTransactions.sort((t1, t2) => t2.date.compareTo(t1.date));
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -32,9 +42,9 @@ class TransactionsList extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Container(
-                        width: 90,
+                        width: 100,
                         child: Text(
-                          "Hora",
+                          showDate ? "Fecha" : "Hora",
                           textAlign: TextAlign.center,
                           style: CustomStyles.kSubtitleStyle,
                         ),
@@ -68,9 +78,9 @@ class TransactionsList extends StatelessWidget {
                 ),
                 Expanded(
                   child: ListView.builder(
-                    itemBuilder: (context, index) =>
-                        TransactionListItem(snapshot.data[index]),
-                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) => TransactionListItem(
+                        sortedTransactions[index], showDate),
+                    itemCount: sortedTransactions.length,
                   ),
                 ),
               ],
@@ -83,8 +93,9 @@ class TransactionsList extends StatelessWidget {
 }
 
 class TransactionListItem extends StatelessWidget {
-  TransactionListItem(this.transaction);
+  TransactionListItem(this.transaction, this.showDate);
   final CashTransaction transaction;
+  final bool showDate;
 
   @override
   Widget build(BuildContext context) {
@@ -100,9 +111,11 @@ class TransactionListItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
-              width: 90,
+              width: 100,
               child: Text(
-                DateFormat("hh:mm").format(transaction.date),
+                showDate
+                    ? DateFormat("dd/MM HH:mm").format(transaction.date)
+                    : DateFormat("HH:mm").format(transaction.date),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black38,

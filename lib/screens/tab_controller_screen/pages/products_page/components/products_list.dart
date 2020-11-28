@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/models/product.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/products_page/components/product_detail_dialog.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
@@ -29,12 +30,15 @@ class ProductsList extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Container(
-                        width: 110,
+                        width: 120,
                         child: Text(
                           "Código",
                           textAlign: TextAlign.left,
                           style: CustomStyles.kSubtitleStyle,
                         ),
+                      ),
+                      SizedBox(
+                        width: 10,
                       ),
                       Expanded(
                         child: Text(
@@ -44,12 +48,12 @@ class ProductsList extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        width: 100,
+                          width: 100,
                           child: Text(
-                        "Precio",
-                        textAlign: TextAlign.center,
-                        style: CustomStyles.kSubtitleStyle,
-                      )),
+                            "Precio",
+                            textAlign: TextAlign.center,
+                            style: CustomStyles.kSubtitleStyle,
+                          )),
                       Container(
                         width: 90,
                         child: Text(
@@ -96,16 +100,18 @@ class ProductsListItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
-              width: 110,
-              child: Text(
-                product.code,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+              width: 120,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.center,
+                child: Text(
+                  product.code,
+                  style: CustomStyles.kNormalStyle,
                 ),
               ),
+            ),
+            SizedBox(
+              width: 10,
             ),
             Expanded(
               child: Text(
@@ -127,18 +133,27 @@ class ProductsListItem extends StatelessWidget {
               child: Text(
                 product.stock.toString(),
                 textAlign: TextAlign.center,
-                style: CustomStyles.kNormalStyle.copyWith(color: product.stock < 5 ? Colors.red : Colors.black),
+                style: CustomStyles.kNormalStyle.copyWith(
+                    color: product.stock < 5 ? Colors.red : Colors.black),
               ),
             ),
-            Container(
-              width: 100,
-              child: Text(
-                "Ver Detalle",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: CustomColors.kAccentColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+            InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => ProductDetailDialog(product),
+                );
+              },
+              child: Container(
+                width: 100,
+                child: Text(
+                  "Ver Detalle",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: CustomColors.kAccentColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
 import 'package:vecindad_stock/models/cash_transaction.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/home_page/components/employees_selector.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
@@ -17,52 +18,6 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
   final priceController = TextEditingController();
 
   TransactionType selectedType = TransactionType.Extraction;
-
-  Widget _buildFieldInput(String label, TextEditingController controller) {
-    return Container(
-      child: Column(
-        children: [
-          TextField(
-            style: CustomStyles.kNormalStyle,
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: label,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTypeSelector(TransactionType type) {
-    if (type == TransactionType.Sell) return Container();
-    return InkWell(
-      onTap: () {
-        setState(() {
-          selectedType = type;
-        });
-      },
-      child: Container(
-        height: 80,
-        width: 150,
-        margin: const EdgeInsets.all(20),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color:
-              type == selectedType ? CustomColors.kAccentColor : Colors.white,
-          borderRadius: BorderRadius.circular(Constants.kCardBorderRadius),
-          border: Border.all(color: CustomColors.kAccentColor, width: 2),
-        ),
-        child: Text(
-          kTransactionTypesNames[type],
-          style: CustomStyles.kTitleStyle.copyWith(
-            color:
-                type == selectedType ? Colors.white : CustomColors.kAccentColor,
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +42,11 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Container(
+              height: 150,
+              width: 600,
+              child: EmployeeSelector(),
+            ),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -132,4 +92,52 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
       ],
     );
   }
+
+
+  Container _buildFieldInput(String label, TextEditingController controller) {
+    return Container(
+      child: Column(
+        children: [
+          TextField(
+            style: CustomStyles.kNormalStyle,
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTypeSelector(TransactionType type) {
+    if (type == TransactionType.Sell) return Container();
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedType = type;
+        });
+      },
+      child: Container(
+        height: 80,
+        width: 150,
+        margin: const EdgeInsets.all(20),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color:
+          type == selectedType ? CustomColors.kAccentColor : Colors.white,
+          borderRadius: BorderRadius.circular(Constants.kCardBorderRadius),
+          border: Border.all(color: CustomColors.kAccentColor, width: 2),
+        ),
+        child: Text(
+          kTransactionTypesNames[type],
+          style: CustomStyles.kTitleStyle.copyWith(
+            color:
+            type == selectedType ? Colors.white : CustomColors.kAccentColor,
+          ),
+        ),
+      ),
+    );
+  }
+
 }

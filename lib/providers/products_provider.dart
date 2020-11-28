@@ -22,8 +22,18 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   List<Product> getSearchedProducts(String search) {
-    if(search.isEmpty) return [];
+    if (search.isEmpty) return [];
     return _products.where((prod) => prod.name.contains(search)).toList();
+  }
+
+  void addLocalProduct(Product product) {
+    _products.add(product);
+    notifyListeners();
+  }
+
+  void removeLocalProduct(String id) {
+    _products.removeWhere((prod) => prod.id == id);
+    notifyListeners();
   }
 
   Future<List<Product>> fetchProducts() async {
@@ -52,8 +62,18 @@ class ProductsProvider extends ChangeNotifier {
     );
     if (response.statusCode == 200) {
       product.id = jsonDecode(response.body)["name"];
-      _products.add(product);
-      notifyListeners();
+      addLocalProduct(product);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deleteProduct(String id) async {
+    final response =
+        await http.delete(Constants.kApiPath + "/products/$id.json");
+    if (response.statusCode == 200) {
+      removeLocalProduct(id);
       return true;
     } else {
       return false;

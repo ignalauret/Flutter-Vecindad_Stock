@@ -16,6 +16,7 @@ class ConfirmationDialog extends StatelessWidget {
         message,
         style: CustomStyles.kNormalStyle,
       ),
+      actionsPadding: const EdgeInsets.all(20),
       actions: [
         FlatButton(
           child: Text(
@@ -24,6 +25,7 @@ class ConfirmationDialog extends StatelessWidget {
           ),
           onPressed: () => Navigator.of(context).pop(false),
         ),
+        SizedBox(width: 5,),
         FlatButton(
           child: Text(
             "Confirmar",

@@ -29,6 +29,11 @@ class TransactionsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeLocalTransaction(String tid) {
+    _transactions.removeWhere((tran) => tran.id == tid);
+    notifyListeners();
+  }
+
   Future<List<CashTransaction>> fetchTransactions() async {
     final response = await http.get(Constants.kApiPath + "/transactions.json");
     final Map<String, dynamic> data = jsonDecode(response.body);
@@ -62,6 +67,22 @@ class TransactionsProvider extends ChangeNotifier {
       } else {
         await updateCash(_cash - transaction.amount);
       }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deleteTransaction(CashTransaction transaction) async {
+    final response = await http
+        .delete(Constants.kApiPath + "/transactions/${transaction.id}.json");
+    if (response.statusCode == 200) {
+      if (transaction.isIncome()) {
+        await updateCash(_cash - transaction.amount);
+      } else {
+        await updateCash(_cash + transaction.amount);
+      }
+      removeLocalTransaction(transaction.id);
       return true;
     } else {
       return false;

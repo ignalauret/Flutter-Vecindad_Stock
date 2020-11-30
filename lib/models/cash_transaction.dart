@@ -107,7 +107,7 @@ class CashTransaction {
     return -1 * amount;
   }
 
-  String getType() {
+  String get typeName {
     return kTransactionTypesNames[this.type];
   }
 }

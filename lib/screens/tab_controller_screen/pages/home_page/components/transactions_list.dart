@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:vecindad_stock/models/cash_transaction.dart';
 import 'package:vecindad_stock/models/employee.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_page/components/transaction_detail_dialog.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
@@ -126,7 +127,7 @@ class TransactionListItem extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                transaction.getType(),
+                transaction.typeName,
                 textAlign: TextAlign.center,
                 style: CustomStyles.kNormalStyle,
               ),
@@ -168,15 +169,23 @@ class TransactionListItem extends StatelessWidget {
             SizedBox(
               width: 50,
             ),
-            Container(
-              width: 100,
-              child: Text(
-                "Ver Detalle",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: CustomColors.kAccentColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+            InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => TransactionDetailDialog(transaction),
+                );
+              },
+              child: Container(
+                width: 100,
+                child: Text(
+                  "Ver Detalle",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: CustomColors.kAccentColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

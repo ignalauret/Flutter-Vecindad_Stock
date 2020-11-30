@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
+import 'package:vecindad_stock/components/custom_text_field.dart';
 import 'package:vecindad_stock/components/dialog_header.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
@@ -52,7 +53,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
             Container(
               height: 100,
               width: 600,
-              child: _buildFieldInput("Nombre", nameController),
+              child: CustomTextField("Nombre", nameController),
             ),
             Row(
               mainAxisSize: MainAxisSize.max,
@@ -80,13 +81,13 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 Container(
                   height: 100,
                   width: 150,
-                  child: _buildFieldInput("Precio", priceController),
+                  child: CustomTextField("Precio", priceController),
                 ),
                 SizedBox(width: 75),
                 Container(
                   height: 100,
                   width: 150,
-                  child: _buildFieldInput("Stock Inicial", stockController),
+                  child: CustomTextField("Stock Inicial", stockController),
                 ),
               ],
             ),
@@ -108,19 +109,5 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
     );
   }
 
-  Container _buildFieldInput(String label, TextEditingController controller) {
-    return Container(
-      child: Column(
-        children: [
-          TextField(
-            style: CustomStyles.kNormalStyle,
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: label,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 }

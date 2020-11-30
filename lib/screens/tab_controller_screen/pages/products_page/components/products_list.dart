@@ -103,7 +103,7 @@ class ProductsListItem extends StatelessWidget {
               width: 120,
               child: FittedBox(
                 fit: BoxFit.scaleDown,
-                alignment: Alignment.center,
+                alignment: Alignment.centerLeft,
                 child: Text(
                   product.code,
                   style: CustomStyles.kNormalStyle,

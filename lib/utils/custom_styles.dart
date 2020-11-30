@@ -31,4 +31,10 @@ class CustomStyles {
     fontSize: 16,
     fontWeight: FontWeight.w600,
   );
+
+  static const kAccentTextStyle = TextStyle(
+    color: CustomColors.kAccentColor,
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+  );
 }

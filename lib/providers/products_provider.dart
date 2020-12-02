@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:vecindad_stock/models/product.dart';
 import 'package:vecindad_stock/utils/constants.dart';
+import 'package:vecindad_stock/utils/time_utils.dart';
 
 class ProductsProvider extends ChangeNotifier {
   ProductsProvider() {
@@ -23,6 +24,9 @@ class ProductsProvider extends ChangeNotifier {
 
   List<Product> getSearchedProducts(String search) {
     if (search.isEmpty) return [];
+    if (Utils.isNumber(search)) {
+      return _products.where((prod) => prod.code.contains(search)).toList();
+    }
     return _products.where((prod) => prod.name.contains(search)).toList();
   }
 

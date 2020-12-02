@@ -101,7 +101,7 @@ class TransactionsProvider extends ChangeNotifier {
     if (_transactions == null) await getTransactions();
     return _transactions.fold<double>(
         0.0,
-        (prev, tran) => TimeUtils.isSameDay(DateTime.now(), tran.date)
+        (prev, tran) => Utils.isSameDay(DateTime.now(), tran.date)
             ? prev + tran.getRealAmount()
             : prev);
   }

@@ -30,7 +30,7 @@ class TransactionsList extends StatelessWidget {
             final List<CashTransaction> sortedTransactions = snapshot.data;
             if (sortDate != null)
               sortedTransactions.retainWhere(
-                (tran) => TimeUtils.isSameDay(tran.date, sortDate),
+                (tran) => Utils.isSameDay(tran.date, sortDate),
               );
             sortedTransactions.sort((t1, t2) => t2.date.compareTo(t1.date));
             return Column(

@@ -5,7 +5,6 @@ import 'package:vecindad_stock/components/action_button.dart';
 import 'package:vecindad_stock/components/confirmation_dialog.dart';
 import 'package:vecindad_stock/components/dialog_header.dart';
 import 'package:vecindad_stock/models/cash_transaction.dart';
-import 'package:vecindad_stock/models/product.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/components/products_cart_list.dart';

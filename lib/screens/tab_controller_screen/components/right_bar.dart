@@ -8,7 +8,6 @@ import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/components/new_cart_dialog.dart';
 import 'package:vecindad_stock/utils/constants.dart';
-import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
 class RightBar extends StatefulWidget {

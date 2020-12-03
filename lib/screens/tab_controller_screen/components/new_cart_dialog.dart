@@ -192,10 +192,10 @@ class _NewCartDialogState extends State<NewCartDialog> {
                         }
                         transactionsData
                             .createTransaction(
-                          DateTime.now(),
-                          TransactionType.Sell,
-                          totalSum,
-                          Map<String, int>.fromEntries(cartProducts),
+                          date: DateTime.now(),
+                          type: TransactionType.Sell,
+                          amount: totalSum,
+                          products: Map<String, int>.fromEntries(cartProducts),
                         )
                             .then((success) {
                           if (success) {

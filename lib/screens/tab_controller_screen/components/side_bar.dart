@@ -60,10 +60,15 @@ class SideBar extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
-          Container(
-            height: 200,
-            alignment: Alignment.center,
-            child: Image.asset("assets/img/logo.png"),
+          InkWell(
+            onTap: () {
+              selectPage(0);
+            },
+            child: Container(
+              height: 200,
+              alignment: Alignment.center,
+              child: Image.asset("assets/img/logo.png"),
+            ),
           ),
           SizedBox(
             height: 20,

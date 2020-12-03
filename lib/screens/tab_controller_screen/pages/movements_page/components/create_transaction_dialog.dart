@@ -16,6 +16,7 @@ class CreateTransactionDialog extends StatefulWidget {
 
 class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
   final priceController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   TransactionType selectedType = TransactionType.Extraction;
 
@@ -57,11 +58,18 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
               ),
             ),
             SizedBox(
-              height: 50,
+              height: 30,
             ),
             Container(
               width: 300,
-              child: _buildFieldInput("Monto", priceController),
+              child: _buildFieldInput("Monto", priceController, false),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Container(
+              width: 300,
+              child: _buildFieldInput("Descripción", descriptionController, true),
             ),
           ],
         ),
@@ -78,10 +86,10 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
               context
                   .read<TransactionsProvider>()
                   .createTransaction(
-                    DateTime.now(),
-                    selectedType,
-                    double.parse(priceController.text),
-                    null,
+                    description: descriptionController.text,
+                    date: DateTime.now(),
+                    type: selectedType,
+                    amount: double.parse(priceController.text),
                   )
                   .then(
                     (value) => Navigator.of(context).pop(),
@@ -93,12 +101,12 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
     );
   }
 
-
-  Container _buildFieldInput(String label, TextEditingController controller) {
+  Container _buildFieldInput(String label, TextEditingController controller, bool lengthLimit) {
     return Container(
       child: Column(
         children: [
           TextField(
+            maxLength: lengthLimit ? 30 : null,
             style: CustomStyles.kNormalStyle,
             controller: controller,
             decoration: InputDecoration(
@@ -112,32 +120,34 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
 
   Widget _buildTypeSelector(TransactionType type) {
     if (type == TransactionType.Sell) return Container();
-    return InkWell(
-      onTap: () {
-        setState(() {
-          selectedType = type;
-        });
-      },
-      child: Container(
-        height: 80,
-        width: 150,
-        margin: const EdgeInsets.all(20),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color:
-          type == selectedType ? CustomColors.kAccentColor : Colors.white,
-          borderRadius: BorderRadius.circular(Constants.kCardBorderRadius),
-          border: Border.all(color: CustomColors.kAccentColor, width: 2),
-        ),
-        child: Text(
-          kTransactionTypesNames[type],
-          style: CustomStyles.kTitleStyle.copyWith(
+    return Container(
+      margin: const EdgeInsets.all(20),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            selectedType = type;
+          });
+        },
+        child: Container(
+          height: 60,
+          width: 150,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
             color:
-            type == selectedType ? Colors.white : CustomColors.kAccentColor,
+                type == selectedType ? CustomColors.kAccentColor : Colors.white,
+            borderRadius: BorderRadius.circular(Constants.kCardBorderRadius),
+            border: Border.all(color: CustomColors.kAccentColor, width: 2),
+          ),
+          child: Text(
+            kTransactionTypesNames[type],
+            style: CustomStyles.kTitleStyle.copyWith(
+              color: type == selectedType
+                  ? Colors.white
+                  : CustomColors.kAccentColor,
+            ),
           ),
         ),
       ),
     );
   }
-
 }

@@ -11,6 +11,7 @@ const Map<TransactionType, String> kTransactionTypesNames = {
 
 class CashTransaction {
   String id;
+  final String description;
   final DateTime date;
   final TransactionType type;
   final String employeeId;
@@ -19,6 +20,7 @@ class CashTransaction {
 
   CashTransaction({
     this.id,
+    this.description,
     @required this.date,
     @required this.type,
     @required this.employeeId,
@@ -48,6 +50,7 @@ class CashTransaction {
     }
     return CashTransaction(
       id: id,
+      description: json["description"],
       date: DateTime.parse(json["date"]),
       type: type,
       employeeId: json["eid"],
@@ -74,6 +77,7 @@ class CashTransaction {
     }
     return {
       "id": this.id,
+      "description": this.description,
       "date": this.date.toString(),
       "type": stringType,
       "eid": this.employeeId,

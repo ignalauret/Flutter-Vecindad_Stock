@@ -44,9 +44,10 @@ class TransactionsProvider extends ChangeNotifier {
     return temp;
   }
 
-  Future<bool> createTransaction(DateTime date, TransactionType type,
-      double amount, Map<String, int> products) async {
+  Future<bool> createTransaction({String description, DateTime date, TransactionType type,
+      double amount, Map<String, int> products}) async {
     final transaction = CashTransaction(
+      description: description,
       date: date,
       type: type,
       employeeId: selectedEmployee,
@@ -133,7 +134,7 @@ class TransactionsProvider extends ChangeNotifier {
   }
 
   /* Employees */
-  String selectedEmployee = "A";
+  String selectedEmployee = "Bruno";
 
   List<Employee> _employees;
 

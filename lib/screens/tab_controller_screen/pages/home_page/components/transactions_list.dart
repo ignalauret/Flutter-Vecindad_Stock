@@ -33,59 +33,63 @@ class TransactionsList extends StatelessWidget {
                 (tran) => Utils.isSameDay(tran.date, sortDate),
               );
             sortedTransactions.sort((t1, t2) => t2.date.compareTo(t1.date));
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Container(
-                  height: 30,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
+            return sortedTransactions.isEmpty
+                ? Center(
+                    child: Text("No hay transacciones", style: CustomStyles.kSubtitleStyle,),
+                  )
+                : Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Container(
-                        width: 100,
-                        child: Text(
-                          showDate ? "Fecha" : "Hora",
-                          textAlign: TextAlign.center,
-                          style: CustomStyles.kSubtitleStyle,
+                        height: 30,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                              width: 100,
+                              child: Text(
+                                showDate ? "Fecha" : "Hora",
+                                textAlign: TextAlign.center,
+                                style: CustomStyles.kSubtitleStyle,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                "Tipo",
+                                textAlign: TextAlign.center,
+                                style: CustomStyles.kSubtitleStyle,
+                              ),
+                            ),
+                            Expanded(
+                                child: Text(
+                              "Empleado",
+                              textAlign: TextAlign.center,
+                              style: CustomStyles.kSubtitleStyle,
+                            )),
+                            Container(
+                              width: 120,
+                              child: Text(
+                                "Monto",
+                                textAlign: TextAlign.center,
+                                style: CustomStyles.kSubtitleStyle,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 150,
+                            ),
+                          ],
                         ),
                       ),
                       Expanded(
-                        child: Text(
-                          "Tipo",
-                          textAlign: TextAlign.center,
-                          style: CustomStyles.kSubtitleStyle,
+                        child: ListView.builder(
+                          itemBuilder: (context, index) => TransactionListItem(
+                              sortedTransactions[index], showDate),
+                          itemCount: sortedTransactions.length,
                         ),
-                      ),
-                      Expanded(
-                          child: Text(
-                        "Empleado",
-                        textAlign: TextAlign.center,
-                        style: CustomStyles.kSubtitleStyle,
-                      )),
-                      Container(
-                        width: 120,
-                        child: Text(
-                          "Monto",
-                          textAlign: TextAlign.center,
-                          style: CustomStyles.kSubtitleStyle,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 150,
                       ),
                     ],
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (context, index) => TransactionListItem(
-                        sortedTransactions[index], showDate),
-                    itemCount: sortedTransactions.length,
-                  ),
-                ),
-              ],
-            );
+                  );
           },
         );
       },

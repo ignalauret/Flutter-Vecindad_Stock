@@ -20,63 +20,67 @@ class ProductsList extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             }
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Container(
-                  height: 30,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
+            return snapshot.data.isEmpty
+                ? Center(
+                    child: Text("No hay productos"),
+                  )
+                : Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Container(
-                        width: 120,
-                        child: Text(
-                          "Código",
-                          textAlign: TextAlign.left,
-                          style: CustomStyles.kSubtitleStyle,
+                        height: 30,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                              width: 120,
+                              child: Text(
+                                "Código",
+                                textAlign: TextAlign.left,
+                                style: CustomStyles.kSubtitleStyle,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "Nombre",
+                                textAlign: TextAlign.left,
+                                style: CustomStyles.kSubtitleStyle,
+                              ),
+                            ),
+                            Container(
+                                width: 100,
+                                child: Text(
+                                  "Precio",
+                                  textAlign: TextAlign.center,
+                                  style: CustomStyles.kSubtitleStyle,
+                                )),
+                            Container(
+                              width: 90,
+                              child: Text(
+                                "Stock",
+                                textAlign: TextAlign.center,
+                                style: CustomStyles.kSubtitleStyle,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 100,
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
                       ),
                       Expanded(
-                        child: Text(
-                          "Nombre",
-                          textAlign: TextAlign.left,
-                          style: CustomStyles.kSubtitleStyle,
+                        child: ListView.builder(
+                          itemBuilder: (context, index) =>
+                              ProductsListItem(snapshot.data[index]),
+                          itemCount: snapshot.data.length,
                         ),
-                      ),
-                      Container(
-                          width: 100,
-                          child: Text(
-                            "Precio",
-                            textAlign: TextAlign.center,
-                            style: CustomStyles.kSubtitleStyle,
-                          )),
-                      Container(
-                        width: 90,
-                        child: Text(
-                          "Stock",
-                          textAlign: TextAlign.center,
-                          style: CustomStyles.kSubtitleStyle,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 100,
                       ),
                     ],
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (context, index) =>
-                        ProductsListItem(snapshot.data[index]),
-                    itemCount: snapshot.data.length,
-                  ),
-                ),
-              ],
-            );
+                  );
           },
         );
       },

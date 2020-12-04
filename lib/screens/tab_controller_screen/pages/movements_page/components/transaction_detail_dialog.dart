@@ -8,6 +8,7 @@ import 'package:vecindad_stock/models/cash_transaction.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/components/products_cart_list.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_page/components/create_transaction_dialog.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
@@ -96,7 +97,21 @@ class TransactionDetailDialog extends StatelessWidget {
                   width: 140,
                   child: ActionButton(
                     label: "Editar",
-                    onTap: () {},
+                    onTap: () {
+                      if (transaction.type == TransactionType.Sell) {
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => CreateTransactionDialog(
+                            editTransaction: transaction,
+                          ),
+                        ).then((value) {
+                          if(value == true) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      }
+                    },
                   ),
                 ),
               ],

@@ -7,6 +7,9 @@ import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
 class EmployeeSelector extends StatefulWidget {
+  EmployeeSelector(this.selectedId, this.selectEmployee);
+  final String selectedId;
+  final Function(String) selectEmployee;
   @override
   _EmployeeSelectorState createState() => _EmployeeSelectorState();
 }
@@ -14,18 +17,16 @@ class EmployeeSelector extends StatefulWidget {
 class _EmployeeSelectorState extends State<EmployeeSelector> {
   @override
   Widget build(BuildContext context) {
-    final employeesData = context.watch<TransactionsProvider>();
-    final selectedId = employeesData.selectedEmployee;
     return FutureBuilder<List<Employee>>(
-      future: employeesData.employees,
+      future: context.watch<TransactionsProvider>().employees,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) => EmployeeItem(
               employee: snapshot.data[index],
-              selected: snapshot.data[index].id == selectedId,
-              select: employeesData.selectEmployee,
+              selected: snapshot.data[index].id == widget.selectedId,
+              select: widget.selectEmployee,
             ),
             itemCount: snapshot.data.length,
           );

@@ -24,6 +24,10 @@ class TransactionsProvider extends ChangeNotifier {
     _transactions = await fetchTransactions();
   }
 
+  CashTransaction getTransactionById(String tid) {
+    return _transactions.firstWhere((tran) => tran.id == tid);
+  }
+
   void addLocalTransaction(CashTransaction transaction) {
     _transactions.add(transaction);
     notifyListeners();
@@ -31,6 +35,24 @@ class TransactionsProvider extends ChangeNotifier {
 
   void removeLocalTransaction(String tid) {
     _transactions.removeWhere((tran) => tran.id == tid);
+    notifyListeners();
+  }
+
+  void editLocalTransaction(
+      {String tid,
+      String description,
+      DateTime date,
+      TransactionType type,
+      double amount,
+      Map<String, int> products,
+      String employee}) {
+    final CashTransaction transaction = getTransactionById(tid);
+    transaction.description = description;
+    transaction.date = date;
+    transaction.type = type;
+    transaction.amount = amount;
+    transaction.products = products;
+    transaction.employeeId = employee;
     notifyListeners();
   }
 
@@ -44,13 +66,18 @@ class TransactionsProvider extends ChangeNotifier {
     return temp;
   }
 
-  Future<bool> createTransaction({String description, DateTime date, TransactionType type,
-      double amount, Map<String, int> products}) async {
+  Future<bool> createTransaction(
+      {String description,
+      DateTime date,
+      TransactionType type,
+      double amount,
+      Map<String, int> products,
+      String employee}) async {
     final transaction = CashTransaction(
       description: description,
       date: date,
       type: type,
-      employeeId: selectedEmployee,
+      employeeId: employee ?? selectedEmployee,
       amount: amount,
       products: products,
     );
@@ -90,6 +117,50 @@ class TransactionsProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> editTransaction(
+      {String id,
+      String description,
+      DateTime date,
+      TransactionType type,
+      double amount,
+      Map<String, int> products,
+      String employee}) async {
+    final response = await http.patch(
+      Constants.kApiPath + "/transactions/$id.json",
+      body: jsonEncode(
+        {
+          "description": description,
+          "date": date.toString(),
+          "type": CashTransaction.getParsedType(type),
+          "amount": amount,
+          "products": products,
+          "eid": employee,
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      final transaction = getTransactionById(id);
+      if (amount != transaction.amount || type != transaction.type) {
+        if (CashTransaction.typeIsIncome(type)) {
+          await addToCash(amount - transaction.getRealAmount());
+        } else {
+          await addToCash(amount * -1 - transaction.getRealAmount());
+        }
+      }
+      editLocalTransaction(
+          tid: id,
+          description: description,
+          employee: employee,
+          products: products,
+          date: date,
+          amount: amount,
+          type: type);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /* Cash */
   double _cash;
 
@@ -117,13 +188,15 @@ class TransactionsProvider extends ChangeNotifier {
     return data;
   }
 
+  Future<bool> addToCash(double amount) async {
+    return await updateCash(await cash + amount);
+  }
+
   Future<bool> updateCash(double newAmount) async {
     final response = await http.put(
       Constants.kApiPath + "/cash.json",
       body: "$newAmount",
     );
-    print(response.body);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       _cash = newAmount;
       notifyListeners();

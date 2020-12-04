@@ -11,12 +11,12 @@ const Map<TransactionType, String> kTransactionTypesNames = {
 
 class CashTransaction {
   String id;
-  final String description;
-  final DateTime date;
-  final TransactionType type;
-  final String employeeId;
-  final double amount;
-  final Map<String, int> products;
+  String description;
+  DateTime date;
+  TransactionType type;
+  String employeeId;
+  double amount;
+  Map<String, int> products;
 
   CashTransaction({
     this.id,
@@ -59,27 +59,30 @@ class CashTransaction {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    String stringType;
+  static String getParsedType(TransactionType type) {
     switch (type) {
       case TransactionType.Sell:
-        stringType = "s";
+        return "s";
         break;
       case TransactionType.Extraction:
-        stringType = "e";
+        return "e";
         break;
       case TransactionType.Payment:
-        stringType = "p";
+        return "p";
         break;
       case TransactionType.Deposit:
-        stringType = "d";
+        return "d";
         break;
     }
+    return null;
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       "id": this.id,
       "description": this.description,
       "date": this.date.toString(),
-      "type": stringType,
+      "type": getParsedType(this.type),
       "eid": this.employeeId,
       "amount": this.amount,
       "products": this.products,
@@ -88,8 +91,8 @@ class CashTransaction {
 
   /* Methods */
 
-  bool isIncome() {
-    switch (this.type) {
+  static bool typeIsIncome(TransactionType type) {
+    switch (type) {
       case TransactionType.Sell:
         return true;
         break;
@@ -106,8 +109,12 @@ class CashTransaction {
     return null;
   }
 
+  bool isIncome() {
+    return typeIsIncome(this.type);
+  }
+
   double getRealAmount() {
-    if(isIncome()) return amount;
+    if (isIncome()) return amount;
     return -1 * amount;
   }
 

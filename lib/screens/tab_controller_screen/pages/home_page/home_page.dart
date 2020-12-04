@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/home_page/components/transactions_list.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
@@ -7,6 +9,7 @@ import 'components/employees_selector.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final employeeData = context.watch<TransactionsProvider>();
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -14,7 +17,10 @@ class HomePage extends StatelessWidget {
           Container(
             height: 150,
             width: double.infinity,
-            child: EmployeeSelector(),
+            child: EmployeeSelector(
+              employeeData.selectedEmployee,
+              employeeData.selectEmployee,
+            ),
           ),
           Container(
             alignment: Alignment.centerLeft,
@@ -23,10 +29,14 @@ class HomePage extends StatelessWidget {
               style: CustomStyles.kTitleStyle,
             ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Expanded(
             child: Container(
-              child: TransactionsList(sortDate: DateTime.now(),),
+              child: TransactionsList(
+                sortDate: DateTime.now(),
+              ),
             ),
           ),
         ],

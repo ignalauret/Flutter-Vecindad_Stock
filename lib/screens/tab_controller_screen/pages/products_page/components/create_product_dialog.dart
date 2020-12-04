@@ -32,15 +32,22 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
       priceController.text = widget.editProduct.price.toStringAsFixed(2);
       stockController.text = widget.editProduct.stock.toString();
     }
+    codeController.addListener(() {
+      setState(() {});
+    });
+    nameController.addListener(() {
+      setState(() {});
+    });
+    priceController.addListener(() {
+      setState(() {});
+    });
+    stockController.addListener(() {
+      setState(() {});
+    });
     super.initState();
   }
 
   void submit() {
-    if (nameController.text.isEmpty ||
-        codeController.text.isEmpty ||
-        priceController.text.isEmpty) {
-      return;
-    }
     if (isEdit) {
       context
           .read<ProductsProvider>()
@@ -125,7 +132,9 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 Container(
                   height: 100,
                   width: 150,
-                  child: CustomTextField(isEdit ? "Stock actual" : "Stock Inicial", stockController),
+                  child: CustomTextField(
+                      isEdit ? "Stock actual" : "Stock Inicial",
+                      stockController),
                 ),
               ],
             ),
@@ -141,6 +150,10 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
             label: isEdit ? "Guardar" : "Agregar",
             fontSize: 25,
             onTap: submit,
+            enabled: nameController.text.isNotEmpty &&
+                codeController.text.isNotEmpty &&
+                priceController.text.isNotEmpty &&
+                stockController.text.isNotEmpty,
           ),
         ),
       ],

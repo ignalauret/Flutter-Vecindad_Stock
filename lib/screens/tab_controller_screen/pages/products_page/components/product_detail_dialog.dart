@@ -5,6 +5,7 @@ import 'package:vecindad_stock/components/confirmation_dialog.dart';
 import 'package:vecindad_stock/components/dialog_header.dart';
 import 'package:vecindad_stock/models/product.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/products_page/components/create_product_dialog.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
@@ -61,7 +62,18 @@ class ProductDetailDialog extends StatelessWidget {
                 width: 140,
                 child: ActionButton(
                   label: "Editar",
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => CreateProductDialog(
+                        editProduct: product,
+                      ),
+                    ).then((value) {
+                      if (value == true) {
+                        Navigator.of(context).pop();
+                      }
+                    });
+                  },
                 ),
               ),
             ],

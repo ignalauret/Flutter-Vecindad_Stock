@@ -1,7 +1,7 @@
 class Product {
   String id;
-  final String code;
-  final String name;
+  String code;
+  String name;
   double price;
   int stock;
 

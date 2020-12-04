@@ -40,6 +40,15 @@ class ProductsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void editLocalProduct(String id, String name, String code, double price, int stock) {
+    final product = getProductById(id);
+    product.name = name;
+    product.code = code;
+    product.price = price;
+    product.stock = stock;
+    notifyListeners();
+  }
+
   Future<List<Product>> fetchProducts() async {
     final response = await http.get(Constants.kApiPath + "/products.json");
     final Map<String, dynamic> data = jsonDecode(response.body);
@@ -78,6 +87,28 @@ class ProductsProvider extends ChangeNotifier {
         await http.delete(Constants.kApiPath + "/products/$id.json");
     if (response.statusCode == 200) {
       removeLocalProduct(id);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> editProduct(
+      String id, String code, String name, double price, int stock) async {
+    final response = await http.patch(
+      Constants.kApiPath + "/products/$id.json",
+      body: jsonEncode(
+        {
+          "code": code,
+          "name": name,
+          "price": price,
+          "stock": stock,
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      editLocalProduct(id, name, code, price, stock);
       return true;
     } else {
       return false;

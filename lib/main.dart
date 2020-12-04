@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vecindad_stock/providers/auth.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
+import 'package:vecindad_stock/screens/login_screen/login_screen.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/tab_controller_screen.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 
@@ -22,17 +24,20 @@ class MyApp extends StatelessWidget {
           create: (context) => ProductsProvider(),
           lazy: false,
         ),
-      ],
-      child: MaterialApp(
-        title: 'La Vecindad',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          accentColor: CustomColors.kAccentColor,
+        ChangeNotifierProvider<Auth>(
+          create: (context) => Auth(),
         ),
-        home: TabControllerScreen(),
+      ],
+      child: Consumer<Auth>(
+        builder: (context, authData, _) => MaterialApp(
+          title: 'La Vecindad',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            accentColor: CustomColors.kAccentColor,
+          ),
+          home: authData.isAuth ? TabControllerScreen() : LoginScreen(),
+        ),
       ),
     );
   }
 }
-
-

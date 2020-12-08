@@ -50,6 +50,11 @@ class _NewCartDialogState extends State<NewCartDialog> {
   }
 
   void submit() {
+    if (codeController.text.isEmpty)
+      setState(() {
+        codeError = true;
+        return;
+      });
     final product =
         context.read<ProductsProvider>().getProductByCode(codeController.text);
     setState(() {

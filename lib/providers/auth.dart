@@ -21,4 +21,9 @@ class Auth extends ChangeNotifier {
       return false;
     }
   }
+
+  void logOut() {
+    _token = null;
+    notifyListeners();
+  }
 }

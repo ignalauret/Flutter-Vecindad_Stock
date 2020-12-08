@@ -52,7 +52,7 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              height: 150,
+              height: 130,
               width: 600,
               child: EmployeeSelector(selectedEmployeeId, (id) {
                 setState(() {
@@ -70,14 +70,14 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 10,
             ),
             Container(
               width: 300,
               child: _buildFieldInput("Monto", priceController, false),
             ),
             SizedBox(
-              height: 30,
+              height: 10,
             ),
             Container(
               width: 300,
@@ -89,7 +89,7 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
       ),
       actions: [
         Container(
-          height: 90,
+          height: 80,
           width: 180,
           margin: const EdgeInsets.all(20),
           child: ActionButton(
@@ -157,7 +157,7 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
   Widget _buildTypeSelector(TransactionType type) {
     if (type == TransactionType.Sell) return Container();
     return Container(
-      margin: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(10),
       child: InkWell(
         onTap: () {
           setState(() {
@@ -165,7 +165,7 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
           });
         },
         child: Container(
-          height: 60,
+          height: 50,
           width: 150,
           alignment: Alignment.center,
           decoration: BoxDecoration(

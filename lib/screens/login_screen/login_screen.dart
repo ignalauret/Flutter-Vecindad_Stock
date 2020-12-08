@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
@@ -25,8 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Center(
         child: Container(
-          height: 600,
-          width: 500,
+          height: 448,
+          width: 400,
           child: Card(
             elevation: 2,
             child: Padding(
@@ -35,25 +37,29 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   Container(
-                    height: 200,
+                    height: 120,
                     alignment: Alignment.center,
                     child: Image.asset("assets/img/logo.png"),
                   ),
                   SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   CustomTextField("Usuario", usernameController),
                   SizedBox(
-                    height: 30,
+                    height: 10,
                   ),
-                  CustomTextField("Contraseña", passwordController,
-                      obscure: true),
+                  CustomTextField(
+                    "Contraseña",
+                    passwordController,
+                    obscure: true,
+                    onSubmit: (_) => tryLogin(),
+                  ),
                   SizedBox(
-                    height: 70,
+                    height: 60,
                   ),
                   Container(
-                    height: 80,
-                    width: 200,
+                    height: 70,
+                    width: 150,
                     child: ActionButton(
                       label: "Ingresar",
                       onTap: tryLogin,

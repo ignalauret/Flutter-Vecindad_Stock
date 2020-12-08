@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vecindad_stock/providers/auth.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 
 class SideBar extends StatelessWidget {
@@ -86,30 +88,36 @@ class SideBar extends StatelessWidget {
             height: 20,
           ),
           Spacer(),
-          Container(
-            height: 100,
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Cerrar Sesión",
-                  style: TextStyle(
-                    color: CustomColors.kAccentColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+          InkWell(
+            onTap: () {
+              context.read<Auth>().logOut();
+            },
+            child: Container(
+              height: 100,
+              width: double.infinity,
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Cerrar Sesión",
+                    style: TextStyle(
+                      color: CustomColors.kAccentColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),SizedBox(
-                  width: 10,
-                ),
-                Icon(
-                  Icons.exit_to_app,
-                  size: 25,
-                  color: CustomColors.kAccentColor,
-                ),
-              ],
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(
+                    Icons.exit_to_app,
+                    size: 25,
+                    color: CustomColors.kAccentColor,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

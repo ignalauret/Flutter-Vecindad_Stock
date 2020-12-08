@@ -226,7 +226,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
                             products: Map.fromEntries(cartProducts),
                           )
                               .then((success) {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(true);
                           });
                         } else {
                           transactionsData

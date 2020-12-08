@@ -7,6 +7,7 @@ import 'package:vecindad_stock/components/dialog_header.dart';
 import 'package:vecindad_stock/models/cash_transaction.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/components/new_cart_dialog.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/components/products_cart_list.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_page/components/create_transaction_dialog.dart';
 import 'package:vecindad_stock/utils/constants.dart';
@@ -41,8 +42,9 @@ class TransactionDetailDialog extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            _buildStat(
-                "Descripción", transaction.description ?? "Sin descripción"),
+            if (transaction.type != TransactionType.Sell)
+              _buildStat(
+                  "Descripción", transaction.description ?? "Sin descripción"),
             SizedBox(
               height: 20,
             ),
@@ -80,7 +82,7 @@ class TransactionDetailDialog extends StatelessWidget {
                               "Está seguro que quiere eliminar este movimiento de ${transaction.typeName}?",
                           onConfirmed: () => context
                               .read<TransactionsProvider>()
-                              .deleteTransaction(transaction)
+                              .deleteTransaction(context, transaction)
                               .then((value) => Navigator.of(context).pop(true)),
                         ),
                       ).then((deleted) {
@@ -99,6 +101,13 @@ class TransactionDetailDialog extends StatelessWidget {
                     label: "Editar",
                     onTap: () {
                       if (transaction.type == TransactionType.Sell) {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              NewCartDialog(editTransaction: transaction),
+                        ).then((value) {
+                          if (value ?? false) Navigator.of(context).pop();
+                        });
                       } else {
                         showDialog(
                           context: context,
@@ -106,9 +115,7 @@ class TransactionDetailDialog extends StatelessWidget {
                             editTransaction: transaction,
                           ),
                         ).then((value) {
-                          if(value == true) {
-                            Navigator.of(context).pop();
-                          }
+                          if (value ?? false) Navigator.of(context).pop();
                         });
                       }
                     },

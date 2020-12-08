@@ -103,6 +103,7 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
                 context
                     .read<TransactionsProvider>()
                     .editTransaction(
+                      context,
                       id: widget.editTransaction.id,
                       description: descriptionController.text,
                       date: widget.editTransaction.date,
@@ -117,6 +118,7 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
                 context
                     .read<TransactionsProvider>()
                     .createTransaction(
+                      context,
                       description: descriptionController.text,
                       date: DateTime.now(),
                       type: selectedType,

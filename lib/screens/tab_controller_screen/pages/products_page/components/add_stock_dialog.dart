@@ -134,7 +134,12 @@ class _AddStockDialogState extends State<AddStockDialog> {
             ),
             Expanded(
               child: products.isNotEmpty
-                  ? ProductsCartList(products, amounts)
+                  ? ProductsCartList(products, amounts, (index) {
+                      setState(() {
+                        products.removeAt(index);
+                        amounts.removeAt(index);
+                      });
+                    })
                   : Center(
                       child: Text(
                         "No se cargó stock de ningún producto aún.",

@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             accentColor: CustomColors.kAccentColor,
           ),
-          home: authData.isAuth ? TabControllerScreen() : LoginScreen(),
+          home: !authData.isAuth ? TabControllerScreen() : LoginScreen(),
         ),
       ),
     );

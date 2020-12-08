@@ -11,14 +11,17 @@ import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
 class NewCartDialog extends StatefulWidget {
+  NewCartDialog({this.editTransaction});
+  final CashTransaction editTransaction;
   @override
   _NewCartDialogState createState() => _NewCartDialogState();
 }
 
 class _NewCartDialogState extends State<NewCartDialog> {
-  final List<Product> products = [];
-  final List<int> amounts = [];
+  List<Product> products = [];
+  List<int> amounts = [];
   bool codeError = false;
+  bool isEdit = false;
 
   final codeController = TextEditingController();
   final amountController = TextEditingController(text: "1");
@@ -29,6 +32,21 @@ class _NewCartDialogState extends State<NewCartDialog> {
       total += products[i].price * amounts[i];
     }
     return total;
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (widget.editTransaction != null) {
+      final productsData =
+          Provider.of<ProductsProvider>(context, listen: false);
+      isEdit = true;
+      products = widget.editTransaction.products.keys
+          .map((pid) => productsData.getProductById(pid))
+          .toList();
+      amounts = widget.editTransaction.products.values.toList();
+    }
+
+    super.didChangeDependencies();
   }
 
   void submit() {
@@ -64,7 +82,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Nueva Venta",
+            isEdit ? "Editar venta" : "Nueva Venta",
             style: CustomStyles.kTitleStyle,
           ),
           IconButton(
@@ -144,7 +162,12 @@ class _NewCartDialogState extends State<NewCartDialog> {
             ),
             Expanded(
               child: products.isNotEmpty
-                  ? ProductsCartList(products, amounts)
+                  ? ProductsCartList(products, amounts, (index) {
+                      setState(() {
+                        products.removeAt(index);
+                        amounts.removeAt(index);
+                      });
+                    })
                   : Center(
                       child: Text(
                         "Carrito vacío. Ingresa un código para agregar un producto.",
@@ -180,7 +203,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
                     height: 90,
                     width: 180,
                     child: ActionButton(
-                      label: "Finalizar",
+                      label: isEdit ? "Guardar" : "Finalizar",
                       fontSize: 25,
                       onTap: () {
                         final transactionsData =
@@ -190,26 +213,35 @@ class _NewCartDialogState extends State<NewCartDialog> {
                           cartProducts
                               .add(MapEntry(products[i].id, amounts[i]));
                         }
-                        transactionsData
-                            .createTransaction(
-                          date: DateTime.now(),
-                          type: TransactionType.Sell,
-                          amount: totalSum,
-                          products: Map<String, int>.fromEntries(cartProducts),
-                        )
-                            .then((success) {
-                          if (success) {
-                            context
-                                .read<ProductsProvider>()
-                                .sellProducts(
-                                  products.map((prod) => prod.id).toList(),
-                                  amounts,
-                                )
-                                .then((success) {
-                              Navigator.of(context).pop();
-                            });
-                          }
-                        });
+                        if (isEdit) {
+                          transactionsData
+                              .editTransaction(
+                            context,
+                            id: widget.editTransaction.id,
+                            description: widget.editTransaction.description,
+                            type: widget.editTransaction.type,
+                            amount: totalSum,
+                            date: widget.editTransaction.date,
+                            employee: widget.editTransaction.employeeId,
+                            products: Map.fromEntries(cartProducts),
+                          )
+                              .then((success) {
+                            Navigator.of(context).pop();
+                          });
+                        } else {
+                          transactionsData
+                              .createTransaction(
+                            context,
+                            date: DateTime.now(),
+                            type: TransactionType.Sell,
+                            amount: totalSum,
+                            products:
+                                Map<String, int>.fromEntries(cartProducts),
+                          )
+                              .then((success) {
+                            Navigator.of(context).pop();
+                          });
+                        }
                       },
                     ),
                   ),

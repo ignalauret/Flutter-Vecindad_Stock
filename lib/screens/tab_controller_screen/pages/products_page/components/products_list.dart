@@ -42,7 +42,7 @@ class ProductsList extends StatelessWidget {
                               ),
                             ),
                             SizedBox(
-                              width: 10,
+                              width: 35,
                             ),
                             Expanded(
                               child: Text(
@@ -99,7 +99,7 @@ class ProductsListItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(Constants.kCardBorderRadius)),
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -115,7 +115,7 @@ class ProductsListItem extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: 10,
+              width: 35,
             ),
             Expanded(
               child: Text(

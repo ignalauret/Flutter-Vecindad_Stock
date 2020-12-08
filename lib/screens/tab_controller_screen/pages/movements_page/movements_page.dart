@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vecindad_stock/components/action_button.dart';
-import 'package:vecindad_stock/screens/tab_controller_screen/pages/home_page/components/transactions_list.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_page/components/transactions_list.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_page/components/create_transaction_dialog.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 

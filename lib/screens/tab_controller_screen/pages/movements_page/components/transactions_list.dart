@@ -111,7 +111,7 @@ class TransactionListItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(Constants.kCardBorderRadius)),
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -142,8 +142,8 @@ class TransactionListItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 40,
-                  width: 40,
+                  height: 30,
+                  width: 30,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(

@@ -13,7 +13,7 @@ class Auth extends ChangeNotifier {
   }
 
   Future<bool> login(String username, String password) async {
-    if(username == "usuario" && password == "1234") {
+    if(username == "vecindad" && password == "1234") {
       _token = "token";
       notifyListeners();
       return true;

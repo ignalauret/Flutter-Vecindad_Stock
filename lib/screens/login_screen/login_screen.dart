@@ -46,7 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: 30,
                   ),
-                  CustomTextField("Contraseña", passwordController),
+                  CustomTextField("Contraseña", passwordController,
+                      obscure: true),
                   SizedBox(
                     height: 70,
                   ),

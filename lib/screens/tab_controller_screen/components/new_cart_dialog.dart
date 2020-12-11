@@ -9,6 +9,9 @@ import 'package:vecindad_stock/screens/tab_controller_screen/components/products
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:universal_html/html.dart' as html;
 
 class NewCartDialog extends StatefulWidget {
   NewCartDialog({this.editTransaction});
@@ -44,8 +47,12 @@ class _NewCartDialogState extends State<NewCartDialog> {
       products = widget.editTransaction.products.keys
           .map((pid) => productsData.getProductById(pid))
           .toList();
-      amounts = widget.editTransaction.products.values.map((map) => map["amount"]).toList();
-      prices = widget.editTransaction.products.values.map((map) => map["price"]).toList();
+      amounts = widget.editTransaction.products.values
+          .map((map) => map["amount"])
+          .toList();
+      prices = widget.editTransaction.products.values
+          .map((map) => map["price"])
+          .toList();
     }
 
     super.didChangeDependencies();
@@ -226,42 +233,93 @@ class _NewCartDialogState extends State<NewCartDialog> {
                       fontSize: 25,
                       enabled: products.length > 0,
                       onTap: () {
-                        final transactionsData =
-                            context.read<TransactionsProvider>();
-                        final List<MapEntry<String, Map<String, int>>> cartProducts = [];
-                        for (int i = 0; i < products.length; i++) {
-                          cartProducts
-                              .add(MapEntry(products[i].id, {"amount": amounts[i], "price": prices[i]}));
-                        }
-                        if (isEdit) {
-                          transactionsData
-                              .editTransaction(
-                            context,
-                            id: widget.editTransaction.id,
-                            description: widget.editTransaction.description,
-                            type: widget.editTransaction.type,
-                            amount: totalSum,
-                            date: widget.editTransaction.date,
-                            employee: widget.editTransaction.employeeId,
-                            products: Map<String, Map<String, int>>.fromEntries(cartProducts),
-                          )
-                              .then((success) {
-                            Navigator.of(context).pop(true);
-                          });
-                        } else {
-                          transactionsData
-                              .createTransaction(
-                            context,
-                            date: DateTime.now(),
-                            type: TransactionType.Sell,
-                            amount: totalSum,
-                            products:
-                                Map<String, Map<String, int>>.fromEntries(cartProducts),
-                          )
-                              .then((success) {
-                            Navigator.of(context).pop();
-                          });
-                        }
+                        final pdf = pw.Document();
+                        pdf.addPage(pw.Page(
+                            pageFormat: PdfPageFormat(
+                                4 * PdfPageFormat.cm, 10 * PdfPageFormat.cm,
+                                marginAll: 0.3 * PdfPageFormat.cm),
+                            build: (pw.Context context) {
+                              return pw.Center(
+                                child: pw.Column(children: [
+                                  pw.Text("La Vecindad",
+                                      style: pw.TextStyle(
+                                          fontWeight: pw.FontWeight.bold)),
+                                  pw.Text("Kiosco - Bar",
+                                      style: pw.TextStyle(fontSize: 10)),
+                                  pw.SizedBox(height: 0.2 * PdfPageFormat.cm),
+                                  pw.Text("Ticket no válido como factura",
+                                      style: pw.TextStyle(fontSize: 6)),
+                                  pw.SizedBox(height: 0.2 * PdfPageFormat.cm),
+                                  pw.ListView(
+                                    children: List.generate(
+                                      products.length,
+                                      (index) => pw.Row(
+                                        children: [
+                                          pw.Text(
+                                            amounts[index].toString(),
+                                            style: pw.TextStyle(fontSize: 6),
+                                          ),
+                                          pw.SizedBox(width: 0.2 * PdfPageFormat.cm),
+                                          pw.Text(
+                                            products[index].name,
+                                            style: pw.TextStyle(fontSize: 6),
+                                          ),
+                                          pw.Spacer(),
+                                          pw.SizedBox(width: 0.2 * PdfPageFormat.cm),
+                                          pw.Text(
+                                            "\$" + (amounts[index] * prices[index]).toString(),
+                                            style: pw.TextStyle(fontSize: 6),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  pw.SizedBox(height: 1 * PdfPageFormat.cm),
+                                  pw.Text("------------"),
+                                ]),
+                              );
+                            }));
+                        final bytes = pdf.save();
+                        final blob = html.Blob([bytes], 'application/pdf');
+                        final url = html.Url.createObjectUrlFromBlob(blob);
+                        html.window.open(url, "_blank");
+                        html.Url.revokeObjectUrl(url);
+                        // final transactionsData =
+                        //     context.read<TransactionsProvider>();
+                        // final List<MapEntry<String, Map<String, int>>> cartProducts = [];
+                        // for (int i = 0; i < products.length; i++) {
+                        //   cartProducts
+                        //       .add(MapEntry(products[i].id, {"amount": amounts[i], "price": prices[i]}));
+                        // }
+                        // if (isEdit) {
+                        //   transactionsData
+                        //       .editTransaction(
+                        //     context,
+                        //     id: widget.editTransaction.id,
+                        //     description: widget.editTransaction.description,
+                        //     type: widget.editTransaction.type,
+                        //     amount: totalSum,
+                        //     date: widget.editTransaction.date,
+                        //     employee: widget.editTransaction.employeeId,
+                        //     products: Map<String, Map<String, int>>.fromEntries(cartProducts),
+                        //   )
+                        //       .then((success) {
+                        //     Navigator.of(context).pop(true);
+                        //   });
+                        // } else {
+                        //   transactionsData
+                        //       .createTransaction(
+                        //     context,
+                        //     date: DateTime.now(),
+                        //     type: TransactionType.Sell,
+                        //     amount: totalSum,
+                        //     products:
+                        //         Map<String, Map<String, int>>.fromEntries(cartProducts),
+                        //   )
+                        //       .then((success) {
+                        //     Navigator.of(context).pop();
+                        //   });
+                        // }
                       },
                     ),
                   ),

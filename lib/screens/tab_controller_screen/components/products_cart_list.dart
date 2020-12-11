@@ -90,9 +90,9 @@ class ProductsCartList extends StatelessWidget {
 }
 
 class ProductsCartListItem extends StatelessWidget {
-  ProductsCartListItem(this.product, this.amount, this.price, {this.remove, this.updatePrice})
-      : this.priceController =
-            TextEditingController(text: price.toString());
+  ProductsCartListItem(this.product, this.amount, this.price,
+      {this.remove, this.updatePrice})
+      : this.priceController = TextEditingController(text: price.toString());
 
   final Product product;
   final int amount;
@@ -136,12 +136,17 @@ class ProductsCartListItem extends StatelessWidget {
             ),
             Container(
               width: 100,
-              child: TextField(
-                controller: priceController,
-                onSubmitted: (price) {
-                  updatePrice(int.parse(price));
-                },
-              ),
+              child: updatePrice == null
+                  ? Text(
+                      "\$$price",
+                      style: CustomStyles.kNormalStyle,
+                    )
+                  : TextField(
+                      controller: priceController,
+                      onSubmitted: (price) {
+                        updatePrice(int.parse(price));
+                      },
+                    ),
             ),
             Container(
               width: 90,

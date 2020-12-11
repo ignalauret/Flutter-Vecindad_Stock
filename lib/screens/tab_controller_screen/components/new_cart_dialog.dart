@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
@@ -233,93 +235,45 @@ class _NewCartDialogState extends State<NewCartDialog> {
                       fontSize: 25,
                       enabled: products.length > 0,
                       onTap: () {
-                        final pdf = pw.Document();
-                        pdf.addPage(pw.Page(
-                            pageFormat: PdfPageFormat(
-                                4 * PdfPageFormat.cm, 10 * PdfPageFormat.cm,
-                                marginAll: 0.3 * PdfPageFormat.cm),
-                            build: (pw.Context context) {
-                              return pw.Center(
-                                child: pw.Column(children: [
-                                  pw.Text("La Vecindad",
-                                      style: pw.TextStyle(
-                                          fontWeight: pw.FontWeight.bold)),
-                                  pw.Text("Kiosco - Bar",
-                                      style: pw.TextStyle(fontSize: 10)),
-                                  pw.SizedBox(height: 0.2 * PdfPageFormat.cm),
-                                  pw.Text("Ticket no válido como factura",
-                                      style: pw.TextStyle(fontSize: 6)),
-                                  pw.SizedBox(height: 0.2 * PdfPageFormat.cm),
-                                  pw.ListView(
-                                    children: List.generate(
-                                      products.length,
-                                      (index) => pw.Row(
-                                        children: [
-                                          pw.Text(
-                                            amounts[index].toString(),
-                                            style: pw.TextStyle(fontSize: 6),
-                                          ),
-                                          pw.SizedBox(width: 0.2 * PdfPageFormat.cm),
-                                          pw.Text(
-                                            products[index].name,
-                                            style: pw.TextStyle(fontSize: 6),
-                                          ),
-                                          pw.Spacer(),
-                                          pw.SizedBox(width: 0.2 * PdfPageFormat.cm),
-                                          pw.Text(
-                                            "\$" + (amounts[index] * prices[index]).toString(),
-                                            style: pw.TextStyle(fontSize: 6),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  pw.SizedBox(height: 1 * PdfPageFormat.cm),
-                                  pw.Text("------------"),
-                                ]),
-                              );
-                            }));
-                        final bytes = pdf.save();
-                        final blob = html.Blob([bytes], 'application/pdf');
-                        final url = html.Url.createObjectUrlFromBlob(blob);
-                        html.window.open(url, "_blank");
-                        html.Url.revokeObjectUrl(url);
-                        // final transactionsData =
-                        //     context.read<TransactionsProvider>();
-                        // final List<MapEntry<String, Map<String, int>>> cartProducts = [];
-                        // for (int i = 0; i < products.length; i++) {
-                        //   cartProducts
-                        //       .add(MapEntry(products[i].id, {"amount": amounts[i], "price": prices[i]}));
-                        // }
-                        // if (isEdit) {
-                        //   transactionsData
-                        //       .editTransaction(
-                        //     context,
-                        //     id: widget.editTransaction.id,
-                        //     description: widget.editTransaction.description,
-                        //     type: widget.editTransaction.type,
-                        //     amount: totalSum,
-                        //     date: widget.editTransaction.date,
-                        //     employee: widget.editTransaction.employeeId,
-                        //     products: Map<String, Map<String, int>>.fromEntries(cartProducts),
-                        //   )
-                        //       .then((success) {
-                        //     Navigator.of(context).pop(true);
-                        //   });
-                        // } else {
-                        //   transactionsData
-                        //       .createTransaction(
-                        //     context,
-                        //     date: DateTime.now(),
-                        //     type: TransactionType.Sell,
-                        //     amount: totalSum,
-                        //     products:
-                        //         Map<String, Map<String, int>>.fromEntries(cartProducts),
-                        //   )
-                        //       .then((success) {
-                        //     Navigator.of(context).pop();
-                        //   });
-                        // }
+                        final transactionsData =
+                            context.read<TransactionsProvider>();
+                        final List<MapEntry<String, Map<String, int>>>
+                            cartProducts = [];
+                        for (int i = 0; i < products.length; i++) {
+                          cartProducts.add(MapEntry(products[i].id,
+                              {"amount": amounts[i], "price": prices[i]}));
+                        }
+                        if (isEdit) {
+                          transactionsData
+                              .editTransaction(
+                            context,
+                            id: widget.editTransaction.id,
+                            description: widget.editTransaction.description,
+                            type: widget.editTransaction.type,
+                            amount: totalSum,
+                            date: widget.editTransaction.date,
+                            employee: widget.editTransaction.employeeId,
+                            products: Map<String, Map<String, int>>.fromEntries(
+                                cartProducts),
+                          )
+                              .then((success) {
+                            Navigator.of(context).pop(true);
+                          });
+                        } else {
+                          transactionsData
+                              .createTransaction(
+                            context,
+                            date: DateTime.now(),
+                            type: TransactionType.Sell,
+                            amount: totalSum,
+                            products: Map<String, Map<String, int>>.fromEntries(
+                                cartProducts),
+                          )
+                              .then((success) {
+                            generatePdf(products, amounts, prices);
+                            Navigator.of(context).pop();
+                          });
+                        }
                       },
                     ),
                   ),
@@ -330,5 +284,78 @@ class _NewCartDialogState extends State<NewCartDialog> {
         ),
       ),
     );
+  }
+
+  void generatePdf(
+      List<Product> products, List<int> amounts, List<int> prices) {
+    final pdf = pw.Document();
+    pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat(4 * PdfPageFormat.cm, 10 * PdfPageFormat.cm,
+            marginAll: 0.3 * PdfPageFormat.cm),
+        build: (pw.Context context) {
+          return pw.Center(
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
+              children: [
+                pw.Text("La Vecindad",
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                pw.Text("Kiosco - Bar", style: pw.TextStyle(fontSize: 10)),
+                pw.SizedBox(height: 0.2 * PdfPageFormat.cm),
+                pw.Text("Ticket no válido como factura",
+                    style: pw.TextStyle(fontSize: 6)),
+                pw.SizedBox(height: 0.2 * PdfPageFormat.cm),
+                pw.ListView(
+                  children: List.generate(
+                    products.length,
+                    (index) => pw.Row(
+                      children: [
+                        pw.Text(
+                          amounts[index].toString(),
+                          style: pw.TextStyle(fontSize: 6),
+                        ),
+                        pw.SizedBox(width: 0.2 * PdfPageFormat.cm),
+                        pw.Text(
+                          products[index].name.substring(
+                              0, min(15, products[index].name.length)),
+                          style: pw.TextStyle(fontSize: 6),
+                        ),
+                        pw.Spacer(),
+                        pw.SizedBox(width: 0.2 * PdfPageFormat.cm),
+                        pw.Text(
+                          "\$" + (amounts[index] * prices[index]).toString(),
+                          style: pw.TextStyle(fontSize: 6),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                pw.SizedBox(height: 0.3 * PdfPageFormat.cm),
+                pw.Row(
+                  mainAxisSize: pw.MainAxisSize.max,
+                  mainAxisAlignment: pw.MainAxisAlignment.end,
+                  children: [
+                    pw.Text("TOTAL: \$${totalSum.toStringAsFixed(2)}",
+                        style: pw.TextStyle(
+                          fontSize: 7,
+                          fontWeight: pw.FontWeight.bold,
+                        )),
+                  ],
+                ),
+                pw.SizedBox(height: 0.5 * PdfPageFormat.cm),
+                pw.Text("Gracias por su compra!",
+                    style: pw.TextStyle(fontSize: 6)),
+                pw.SizedBox(
+                    height:
+                        max(1, (4 - products.length)) * 0.2 * PdfPageFormat.cm),
+                pw.Text("------------"),
+              ],
+            ),
+          );
+        }));
+    final bytes = pdf.save();
+    final blob = html.Blob([bytes], 'application/pdf');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    html.window.open(url, "_blank");
+    html.Url.revokeObjectUrl(url);
   }
 }

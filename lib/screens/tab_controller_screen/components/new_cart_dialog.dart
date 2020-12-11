@@ -20,6 +20,7 @@ class NewCartDialog extends StatefulWidget {
 class _NewCartDialogState extends State<NewCartDialog> {
   List<Product> products = [];
   List<int> amounts = [];
+  List<int> prices = [];
   bool codeError = false;
   bool isEdit = false;
 
@@ -29,7 +30,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
   double get totalSum {
     double total = 0.0;
     for (int i = 0; i < products.length; i++) {
-      total += products[i].price * amounts[i];
+      total += prices[i] * amounts[i];
     }
     return total;
   }
@@ -43,7 +44,8 @@ class _NewCartDialogState extends State<NewCartDialog> {
       products = widget.editTransaction.products.keys
           .map((pid) => productsData.getProductById(pid))
           .toList();
-      amounts = widget.editTransaction.products.values.toList();
+      amounts = widget.editTransaction.products.values.map((map) => map["amount"]).toList();
+      prices = widget.editTransaction.products.values.map((map) => map["price"]).toList();
     }
 
     super.didChangeDependencies();
@@ -68,6 +70,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
         } else {
           products.add(product);
           amounts.add(int.parse(amountController.text));
+          prices.add(product.price.floor());
         }
         codeController.clear();
         amountController.text = "1";
@@ -167,12 +170,23 @@ class _NewCartDialogState extends State<NewCartDialog> {
             ),
             Expanded(
               child: products.isNotEmpty
-                  ? ProductsCartList(products, amounts, (index) {
-                      setState(() {
-                        products.removeAt(index);
-                        amounts.removeAt(index);
-                      });
-                    })
+                  ? ProductsCartList(
+                      products: products,
+                      amounts: amounts,
+                      prices: prices,
+                      removeProduct: (index) {
+                        setState(() {
+                          products.removeAt(index);
+                          amounts.removeAt(index);
+                          prices.removeAt(index);
+                        });
+                      },
+                      changePrice: (index, price) {
+                        setState(() {
+                          prices[index] = price;
+                        });
+                      },
+                    )
                   : Center(
                       child: Text(
                         "Carrito vacío. Ingresa un código para agregar un producto.",
@@ -210,13 +224,14 @@ class _NewCartDialogState extends State<NewCartDialog> {
                     child: ActionButton(
                       label: isEdit ? "Guardar" : "Finalizar",
                       fontSize: 25,
+                      enabled: products.length > 0,
                       onTap: () {
                         final transactionsData =
                             context.read<TransactionsProvider>();
-                        final List<MapEntry<String, int>> cartProducts = [];
+                        final List<MapEntry<String, Map<String, int>>> cartProducts = [];
                         for (int i = 0; i < products.length; i++) {
                           cartProducts
-                              .add(MapEntry(products[i].id, amounts[i]));
+                              .add(MapEntry(products[i].id, {"amount": amounts[i], "price": prices[i]}));
                         }
                         if (isEdit) {
                           transactionsData
@@ -228,7 +243,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
                             amount: totalSum,
                             date: widget.editTransaction.date,
                             employee: widget.editTransaction.employeeId,
-                            products: Map.fromEntries(cartProducts),
+                            products: Map<String, Map<String, int>>.fromEntries(cartProducts),
                           )
                               .then((success) {
                             Navigator.of(context).pop(true);
@@ -241,7 +256,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
                             type: TransactionType.Sell,
                             amount: totalSum,
                             products:
-                                Map<String, int>.fromEntries(cartProducts),
+                                Map<String, Map<String, int>>.fromEntries(cartProducts),
                           )
                               .then((success) {
                             Navigator.of(context).pop();

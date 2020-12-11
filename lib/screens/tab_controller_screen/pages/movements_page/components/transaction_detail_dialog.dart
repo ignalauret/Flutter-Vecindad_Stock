@@ -57,7 +57,8 @@ class TransactionDetailDialog extends StatelessWidget {
                     itemBuilder: (context, index) => ProductsCartListItem(
                       productsData.getProductById(
                           transaction.products.keys.toList()[index]),
-                      transaction.products.values.toList()[index],
+                      transaction.products.values.map((map) => map["amount"]).toList()[index],
+                      transaction.products.values.map((map) => map["price"]).toList()[index], //TODO
                     ),
                     itemCount: transaction.products.length,
                   ),

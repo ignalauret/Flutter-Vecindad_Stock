@@ -46,7 +46,7 @@ class TransactionsProvider extends ChangeNotifier {
       DateTime date,
       TransactionType type,
       double amount,
-      Map<String, int> products,
+      Map<String, Map<String,int>> products,
       String employee}) {
     final CashTransaction transaction = getTransactionById(tid);
     transaction.description = description;
@@ -74,7 +74,7 @@ class TransactionsProvider extends ChangeNotifier {
     DateTime date,
     TransactionType type,
     double amount,
-    Map<String, int> products,
+    Map<String, Map<String, int>> products,
     String employee,
   }) async {
     final transaction = CashTransaction(
@@ -95,7 +95,7 @@ class TransactionsProvider extends ChangeNotifier {
       if (type == TransactionType.Sell) {
         await context.read<ProductsProvider>().sellProducts(
               products.keys.toList(),
-              products.values.toList(),
+              products.values.map((map) => map["amount"]).toList(),
             );
       }
       transaction.id = jsonDecode(response.body)["name"];
@@ -124,7 +124,7 @@ class TransactionsProvider extends ChangeNotifier {
       if (transaction.type == TransactionType.Sell) {
         await context.read<ProductsProvider>().sellProducts(
             transaction.products.keys.toList(),
-            transaction.products.values.map((amount) => amount * -1).toList());
+            transaction.products.values.map((map) => map["amount"] * -1).toList());
       }
       removeLocalTransaction(transaction.id);
       return true;
@@ -140,7 +140,7 @@ class TransactionsProvider extends ChangeNotifier {
     DateTime date,
     TransactionType type,
     double amount,
-    Map<String, int> products,
+    Map<String, Map<String, int>> products,
     String employee,
   }) async {
     final response = await http.patch(
@@ -166,15 +166,13 @@ class TransactionsProvider extends ChangeNotifier {
         }
       }
       if (transaction.type == TransactionType.Sell) {
-        final Map<String, int> productsBalance =
+        final Map<String, Map<String, int>> productsBalance =
             Map.fromEntries(products.entries);
-        print(productsBalance);
         transaction.products.forEach((key, value) {
-          productsBalance[key] = (productsBalance[key] ?? 0) - value;
+          productsBalance[key]["amount"] = (productsBalance[key]["amount"] ?? 0) - value["amount"];
         });
-        print(productsBalance);
         await context.read<ProductsProvider>().sellProducts(
-            productsBalance.keys.toList(), productsBalance.values.toList());
+            productsBalance.keys.toList(), products.values.map((map) => map["amount"]).toList());
       }
       editLocalTransaction(
           tid: id,

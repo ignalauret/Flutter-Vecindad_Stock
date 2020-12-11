@@ -4,11 +4,18 @@ import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
 class ProductsCartList extends StatelessWidget {
-  ProductsCartList(this.products, this.amounts, this.removeProduct);
+  ProductsCartList(
+      {this.products,
+      this.amounts,
+      this.prices,
+      this.removeProduct,
+      this.changePrice});
 
   final List<Product> products;
   final List<int> amounts;
+  final List<int> prices;
   final Function(int) removeProduct;
+  final Function(int, int) changePrice;
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +73,12 @@ class ProductsCartList extends StatelessWidget {
             itemBuilder: (context, index) => ProductsCartListItem(
               products[index],
               amounts[index],
+              prices[index],
               remove: () {
                 removeProduct(index);
+              },
+              updatePrice: (price) {
+                changePrice(index, price);
               },
             ),
             itemCount: products.length,
@@ -79,10 +90,17 @@ class ProductsCartList extends StatelessWidget {
 }
 
 class ProductsCartListItem extends StatelessWidget {
-  ProductsCartListItem(this.product, this.amount, {this.remove});
+  ProductsCartListItem(this.product, this.amount, this.price, {this.remove, this.updatePrice})
+      : this.priceController =
+            TextEditingController(text: price.toString());
+
   final Product product;
   final int amount;
+  final int price;
   final VoidCallback remove;
+  final Function(int) updatePrice;
+  final TextEditingController priceController;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -118,10 +136,11 @@ class ProductsCartListItem extends StatelessWidget {
             ),
             Container(
               width: 100,
-              child: Text(
-                "\$" + product.price.toString(),
-                textAlign: TextAlign.center,
-                style: CustomStyles.kNormalStyle,
+              child: TextField(
+                controller: priceController,
+                onSubmitted: (price) {
+                  updatePrice(int.parse(price));
+                },
               ),
             ),
             Container(

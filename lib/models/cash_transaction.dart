@@ -16,7 +16,7 @@ class CashTransaction {
   TransactionType type;
   String employeeId;
   double amount;
-  Map<String, int> products;
+  Map<String, Map<String, int>> products;
 
   CashTransaction({
     this.id,
@@ -32,11 +32,12 @@ class CashTransaction {
 
   factory CashTransaction.fromJson(String id, Map<String, dynamic> json) {
     TransactionType type;
-    Map<String, int> products;
+    Map<String, Map<String, int>> products;
     switch (json["type"]) {
       case "s":
         type = TransactionType.Sell;
-        products = Map<String, int>.from(json["products"]);
+        final temp = Map<String, Map>.from(json["products"]);
+        products = temp.map((key, value) => MapEntry<String, Map<String, int>>(key, Map<String, int>.from(value)));
         break;
       case "e":
         type = TransactionType.Extraction;

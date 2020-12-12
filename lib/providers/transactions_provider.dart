@@ -46,7 +46,7 @@ class TransactionsProvider extends ChangeNotifier {
       DateTime date,
       TransactionType type,
       double amount,
-      Map<String, Map<String,int>> products,
+      Map<String, Map<String, int>> products,
       String employee}) {
     final CashTransaction transaction = getTransactionById(tid);
     transaction.description = description;
@@ -124,7 +124,9 @@ class TransactionsProvider extends ChangeNotifier {
       if (transaction.type == TransactionType.Sell) {
         await context.read<ProductsProvider>().sellProducts(
             transaction.products.keys.toList(),
-            transaction.products.values.map((map) => map["amount"] * -1).toList());
+            transaction.products.values
+                .map((map) => map["amount"] * -1)
+                .toList());
       }
       removeLocalTransaction(transaction.id);
       return true;
@@ -166,22 +168,24 @@ class TransactionsProvider extends ChangeNotifier {
         }
       }
       if (transaction.type == TransactionType.Sell) {
-        final Map<String, Map<String, int>> productsBalance =
-            Map.fromEntries(products.entries);
+        final Map<String, int> productsBalance = products.map((key, value) => MapEntry(key, value["amount"]));
         transaction.products.forEach((key, value) {
-          productsBalance[key]["amount"] = (productsBalance[key]["amount"] ?? 0) - value["amount"];
+          productsBalance[key] =
+              (productsBalance[key] ?? 0) - value["amount"];
         });
         await context.read<ProductsProvider>().sellProducts(
-            productsBalance.keys.toList(), products.values.map((map) => map["amount"]).toList());
+            productsBalance.keys.toList(),
+            products.values.map((map) => map["amount"]).toList());
       }
       editLocalTransaction(
-          tid: id,
-          description: description,
-          employee: employee,
-          products: products,
-          date: date,
-          amount: amount,
-          type: type);
+        tid: id,
+        description: description,
+        employee: employee,
+        products: products,
+        date: date,
+        amount: amount,
+        type: type,
+      );
       return true;
     } else {
       return false;

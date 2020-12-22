@@ -47,7 +47,6 @@ class MovementsPage extends StatelessWidget {
           Expanded(
             child: Container(
               child: TransactionsList(
-                sortDate: null,
                 showDate: true,
               ),
             ),

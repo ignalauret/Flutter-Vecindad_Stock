@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_page/components/transactions_list.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
+import 'package:vecindad_stock/utils/utils.dart';
 
 import 'components/employees_selector.dart';
 
@@ -35,7 +36,8 @@ class HomePage extends StatelessWidget {
           Expanded(
             child: Container(
               child: TransactionsList(
-                sortDate: DateTime.now(),
+                startDate: Utils.openDate,
+                endDate: Utils.closeDate,
               ),
             ),
           ),

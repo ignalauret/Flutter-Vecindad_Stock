@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:vecindad_stock/models/product.dart';
 import 'package:vecindad_stock/utils/constants.dart';
-import 'package:vecindad_stock/utils/time_utils.dart';
+import 'package:vecindad_stock/utils/utils.dart';
 
 class ProductsProvider extends ChangeNotifier {
   ProductsProvider() {

@@ -7,7 +7,7 @@ import 'package:vecindad_stock/models/cash_transaction.dart';
 import 'package:vecindad_stock/models/employee.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/utils/constants.dart';
-import 'package:vecindad_stock/utils/time_utils.dart';
+import 'package:vecindad_stock/utils/utils.dart';
 
 class TransactionsProvider extends ChangeNotifier {
   TransactionsProvider() {

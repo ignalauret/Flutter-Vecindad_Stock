@@ -9,11 +9,12 @@ import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_pag
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
-import 'package:vecindad_stock/utils/time_utils.dart';
+import 'package:vecindad_stock/utils/utils.dart';
 
 class TransactionsList extends StatelessWidget {
-  TransactionsList({this.sortDate, this.showDate = false});
-  final DateTime sortDate;
+  TransactionsList({this.startDate, this.endDate, this.showDate = false});
+  final DateTime startDate;
+  final DateTime endDate;
   final bool showDate;
   @override
   Widget build(BuildContext context) {
@@ -28,14 +29,18 @@ class TransactionsList extends StatelessWidget {
               );
             }
             final List<CashTransaction> sortedTransactions = snapshot.data;
-            if (sortDate != null)
+            if (startDate != null)
               sortedTransactions.retainWhere(
-                (tran) => Utils.isSameDay(tran.date, sortDate),
+                (tran) =>
+                    tran.date.isBefore(endDate) && tran.date.isAfter(startDate),
               );
             sortedTransactions.sort((t1, t2) => t2.date.compareTo(t1.date));
             return sortedTransactions.isEmpty
                 ? Center(
-                    child: Text("No hay transacciones", style: CustomStyles.kSubtitleStyle,),
+                    child: Text(
+                      "No hay transacciones",
+                      style: CustomStyles.kSubtitleStyle,
+                    ),
                   )
                 : Column(
                     mainAxisSize: MainAxisSize.max,

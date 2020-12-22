@@ -60,13 +60,35 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
                 });
               }),
             ),
+            // Container(
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //     mainAxisSize: MainAxisSize.max,
+            //     children: TransactionType.values
+            //         .map((type) => _buildTypeSelector(type))
+            //         .toList(),
+            //   ),
+            // ),
             Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.max,
-                children: TransactionType.values
-                    .map((type) => _buildTypeSelector(type))
+              child: DropdownButton<TransactionType>(
+                items: TransactionType.values
+                    .sublist(1)
+                    .map(
+                      (type) => DropdownMenuItem<TransactionType>(
+                        child: Text(
+                          kTransactionTypesNames[type],
+                          style: CustomStyles.kNormalStyle,
+                        ),
+                        value: type,
+                      ),
+                    )
                     .toList(),
+                value: selectedType,
+                onChanged: (type) {
+                  setState(() {
+                    selectedType = type;
+                  });
+                },
               ),
             ),
             SizedBox(

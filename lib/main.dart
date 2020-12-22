@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<TransactionsProvider>(
           create: (context) => TransactionsProvider(),
+          lazy: false,
         ),
         ChangeNotifierProvider<ProductsProvider>(
           create: (context) => ProductsProvider(),

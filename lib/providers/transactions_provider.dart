@@ -215,7 +215,7 @@ class TransactionsProvider extends ChangeNotifier {
 
   Future<double> fetchCash() async {
     final response = await http.get(Constants.kApiPath + "/cash.json");
-    final double data = jsonDecode(response.body);
+    final double data = jsonDecode(response.body) * 1.0;
     return data;
   }
 
@@ -269,4 +269,22 @@ class TransactionsProvider extends ChangeNotifier {
   Employee getEmployeeById(String id) {
     return _employees.firstWhere((employee) => employee.id == id);
   }
+
+  /* Debug */
+
+void printGiftedProducts() {
+  final Map<String, int> products = {};
+  _transactions.forEach((tran) {
+    if(tran.type == TransactionType.Sell) {
+      for(int i = 0; i < tran.products.length; i++) {
+        if(tran.products.values.elementAt(i)["price"] == 0) {
+          final prev = products[tran.products.keys.elementAt(i)];
+          if(prev == null) products[tran.products.keys.elementAt(i)] = tran.products.values.elementAt(i)["amount"];
+          else products[tran.products.keys.elementAt(i)] = prev + tran.products.values.elementAt(i)["amount"];
+        }
+      }
+    }
+  });
+  print(products);
+}
 }

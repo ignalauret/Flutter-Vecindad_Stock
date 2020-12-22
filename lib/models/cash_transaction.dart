@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
-enum TransactionType { Sell, Extraction, Payment, Deposit }
+enum TransactionType { Sell, Extraction, Payment, Deposit, Salary, PositiveCash, NegativeCash }
 
 const Map<TransactionType, String> kTransactionTypesNames = {
   TransactionType.Deposit: "Depósito",
   TransactionType.Extraction: "Extracción",
   TransactionType.Payment: "Pago",
   TransactionType.Sell: "Venta",
+  TransactionType.Salary: "Salario",
+  TransactionType.PositiveCash: "Sumar Caja",
+  TransactionType.NegativeCash: "Restar Caja"
 };
 
 class CashTransaction {
@@ -48,6 +51,16 @@ class CashTransaction {
       case "d":
         type = TransactionType.Deposit;
         break;
+      case "sa":
+        type = TransactionType.Salary;
+        break;
+      case "pc":
+        type = TransactionType.PositiveCash;
+        break;
+      case "nc":
+        type = TransactionType.NegativeCash;
+        break;
+
     }
     return CashTransaction(
       id: id,
@@ -55,7 +68,7 @@ class CashTransaction {
       date: DateTime.parse(json["date"]),
       type: type,
       employeeId: json["eid"],
-      amount: json["amount"],
+      amount: json["amount"] * 1.0,
       products: products,
     );
   }
@@ -64,15 +77,20 @@ class CashTransaction {
     switch (type) {
       case TransactionType.Sell:
         return "s";
-        break;
       case TransactionType.Extraction:
         return "e";
-        break;
       case TransactionType.Payment:
         return "p";
-        break;
       case TransactionType.Deposit:
         return "d";
+      case TransactionType.Salary:
+        return "sa";
+        break;
+      case TransactionType.PositiveCash:
+        return "pc";
+        break;
+      case TransactionType.NegativeCash:
+        return "nc";
         break;
     }
     return null;
@@ -96,16 +114,18 @@ class CashTransaction {
     switch (type) {
       case TransactionType.Sell:
         return true;
-        break;
       case TransactionType.Extraction:
         return false;
-        break;
       case TransactionType.Payment:
         return false;
-        break;
       case TransactionType.Deposit:
         return true;
-        break;
+      case TransactionType.Salary:
+        return false;
+      case TransactionType.PositiveCash:
+        return true;
+      case TransactionType.NegativeCash:
+        return false;
     }
     return null;
   }
@@ -115,8 +135,8 @@ class CashTransaction {
   }
 
   double getRealAmount() {
-    if (isIncome()) return amount;
-    return -1 * amount;
+    if (this.isIncome()) return this.amount;
+    return -1 * this.amount;
   }
 
   String get typeName {

@@ -18,7 +18,7 @@ class Product {
       id: id,
       code: json["code"],
       name: json["name"],
-      price: json["price"],
+      price: json["price"] * 1.0,
       stock: json["stock"],
     );
   }

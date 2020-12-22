@@ -40,7 +40,8 @@ class ProductsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editLocalProduct(String id, String name, String code, double price, int stock) {
+  void editLocalProduct(
+      String id, String name, String code, double price, int stock) {
     final product = getProductById(id);
     product.name = name;
     product.code = code;

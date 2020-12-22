@@ -27,7 +27,7 @@ class ProductsProvider extends ChangeNotifier {
     if (Utils.isNumber(search)) {
       return _products.where((prod) => prod.code.contains(search)).toList();
     }
-    return _products.where((prod) => prod.name.contains(search)).toList();
+    return _products.where((prod) => prod.name.toLowerCase().contains(search.toLowerCase())).toList();
   }
 
   void addLocalProduct(Product product) {

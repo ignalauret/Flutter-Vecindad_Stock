@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum TransactionType { Sell, Extraction, Payment, Deposit, Salary, PositiveCash, NegativeCash }
+enum PaymentMethod { Cash, Card }
 
 const Map<TransactionType, String> kTransactionTypesNames = {
   TransactionType.Deposit: "Depósito",
@@ -12,11 +13,17 @@ const Map<TransactionType, String> kTransactionTypesNames = {
   TransactionType.NegativeCash: "Restar Caja"
 };
 
+const Map<PaymentMethod, String> kPaymentMethodsNames = {
+  PaymentMethod.Cash: "Efectivo",
+  PaymentMethod.Card: "Tarjeta",
+};
+
 class CashTransaction {
   String id;
   String description;
   DateTime date;
   TransactionType type;
+  PaymentMethod paymentMethod;
   String employeeId;
   double amount;
   Map<String, Map<String, int>> products;
@@ -24,6 +31,7 @@ class CashTransaction {
   CashTransaction({
     this.id,
     this.description,
+    @required this.paymentMethod,
     @required this.date,
     @required this.type,
     @required this.employeeId,
@@ -62,11 +70,27 @@ class CashTransaction {
         break;
 
     }
+    PaymentMethod method;
+    if(json["paymentMethod"] == null) {
+      method = PaymentMethod.Cash;
+    } else {
+      switch(json["paymentMethod"]) {
+        case "cash":
+          method = PaymentMethod.Cash;
+          break;
+        case "card":
+          method = PaymentMethod.Card;
+          break;
+        default:
+          method = PaymentMethod.Cash;
+      }
+    }
     return CashTransaction(
       id: id,
       description: json["description"],
       date: DateTime.parse(json["date"]),
       type: type,
+      paymentMethod: method,
       employeeId: json["eid"],
       amount: json["amount"] * 1.0,
       products: products,
@@ -96,12 +120,25 @@ class CashTransaction {
     return null;
   }
 
+  static String getParsedMethod(PaymentMethod method) {
+    switch(method) {
+      case PaymentMethod.Cash:
+        return "cash";
+        break;
+      case PaymentMethod.Card:
+        return "card";
+        break;
+    }
+    return null;
+  }
+
   Map<String, dynamic> toJson() {
     return {
       "id": this.id,
       "description": this.description,
       "date": this.date.toString(),
       "type": getParsedType(this.type),
+      "paymentMethod": getParsedMethod(this.paymentMethod),
       "eid": this.employeeId,
       "amount": this.amount,
       "products": this.products,

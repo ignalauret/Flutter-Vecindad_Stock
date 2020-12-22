@@ -81,6 +81,7 @@ class TransactionsProvider extends ChangeNotifier {
       description: description,
       date: date,
       type: type,
+      paymentMethod: PaymentMethod.Cash,
       employeeId: employee ?? selectedEmployee,
       amount: amount,
       products: products,
@@ -168,10 +169,10 @@ class TransactionsProvider extends ChangeNotifier {
         }
       }
       if (transaction.type == TransactionType.Sell) {
-        final Map<String, int> productsBalance = products.map((key, value) => MapEntry(key, value["amount"]));
+        final Map<String, int> productsBalance =
+            products.map((key, value) => MapEntry(key, value["amount"]));
         transaction.products.forEach((key, value) {
-          productsBalance[key] =
-              (productsBalance[key] ?? 0) - value["amount"];
+          productsBalance[key] = (productsBalance[key] ?? 0) - value["amount"];
         });
         await context.read<ProductsProvider>().sellProducts(
             productsBalance.keys.toList(),
@@ -202,9 +203,17 @@ class TransactionsProvider extends ChangeNotifier {
 
   Future<double> get todayCash async {
     if (_transactions == null) await getTransactions();
+    final temp = _transactions.fold<double>(
+        0,
+        (prev, tran) => tran.date.isAfter(Utils.openDate) &&
+                tran.date.isBefore(Utils.closeDate)
+            ? prev + 1
+            : prev);
+    print(temp);
     return _transactions.fold<double>(
         0.0,
-        (prev, tran) => Utils.isSameDay(DateTime.now(), tran.date)
+        (prev, tran) => tran.date.isAfter(Utils.openDate) &&
+                tran.date.isBefore(Utils.closeDate)
             ? prev + tran.getRealAmount()
             : prev);
   }
@@ -272,19 +281,23 @@ class TransactionsProvider extends ChangeNotifier {
 
   /* Debug */
 
-void printGiftedProducts() {
-  final Map<String, int> products = {};
-  _transactions.forEach((tran) {
-    if(tran.type == TransactionType.Sell) {
-      for(int i = 0; i < tran.products.length; i++) {
-        if(tran.products.values.elementAt(i)["price"] == 0) {
-          final prev = products[tran.products.keys.elementAt(i)];
-          if(prev == null) products[tran.products.keys.elementAt(i)] = tran.products.values.elementAt(i)["amount"];
-          else products[tran.products.keys.elementAt(i)] = prev + tran.products.values.elementAt(i)["amount"];
+  void printGiftedProducts() {
+    final Map<String, int> products = {};
+    _transactions.forEach((tran) {
+      if (tran.type == TransactionType.Sell) {
+        for (int i = 0; i < tran.products.length; i++) {
+          if (tran.products.values.elementAt(i)["price"] == 0) {
+            final prev = products[tran.products.keys.elementAt(i)];
+            if (prev == null)
+              products[tran.products.keys.elementAt(i)] =
+                  tran.products.values.elementAt(i)["amount"];
+            else
+              products[tran.products.keys.elementAt(i)] =
+                  prev + tran.products.values.elementAt(i)["amount"];
+          }
         }
       }
-    }
-  });
-  print(products);
-}
+    });
+    print(products);
+  }
 }

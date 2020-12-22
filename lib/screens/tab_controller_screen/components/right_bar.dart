@@ -106,7 +106,7 @@ class _RightBarState extends State<RightBar> {
             ),
           ),
           Container(
-            height: 150,
+            height: 120,
             width: 300,
             child: ActionButton(
               label: "Nueva Venta",

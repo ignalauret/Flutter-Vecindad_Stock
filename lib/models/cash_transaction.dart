@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 
-enum TransactionType { Sell, Extraction, Payment, Deposit, Salary, PositiveCash, NegativeCash }
+enum TransactionType {
+  Sell,
+  Extraction,
+  Payment,
+  Deposit,
+  Salary,
+  PositiveCash,
+  NegativeCash,
+  Provider,
+  Service,
+  Other
+}
 enum PaymentMethod { Cash, Card }
 
 const Map<TransactionType, String> kTransactionTypesNames = {
@@ -10,7 +21,10 @@ const Map<TransactionType, String> kTransactionTypesNames = {
   TransactionType.Sell: "Venta",
   TransactionType.Salary: "Salario",
   TransactionType.PositiveCash: "Sumar Caja",
-  TransactionType.NegativeCash: "Restar Caja"
+  TransactionType.NegativeCash: "Restar Caja",
+  TransactionType.Provider: "Proveedor",
+  TransactionType.Service: "Servicio",
+  TransactionType.Other: "Gastos Varios",
 };
 
 const Map<PaymentMethod, String> kPaymentMethodsNames = {
@@ -48,7 +62,8 @@ class CashTransaction {
       case "s":
         type = TransactionType.Sell;
         final temp = Map<String, Map>.from(json["products"]);
-        products = temp.map((key, value) => MapEntry<String, Map<String, int>>(key, Map<String, int>.from(value)));
+        products = temp.map((key, value) => MapEntry<String, Map<String, int>>(
+            key, Map<String, int>.from(value)));
         break;
       case "e":
         type = TransactionType.Extraction;
@@ -68,13 +83,21 @@ class CashTransaction {
       case "nc":
         type = TransactionType.NegativeCash;
         break;
-
+      case "provider":
+        type = TransactionType.Provider;
+        break;
+      case "service":
+        type = TransactionType.Service;
+        break;
+      case "other":
+        type = TransactionType.Other;
+        break;
     }
     PaymentMethod method;
-    if(json["paymentMethod"] == null) {
+    if (json["paymentMethod"] == null) {
       method = PaymentMethod.Cash;
     } else {
-      switch(json["paymentMethod"]) {
+      switch (json["paymentMethod"]) {
         case "cash":
           method = PaymentMethod.Cash;
           break;
@@ -116,12 +139,21 @@ class CashTransaction {
       case TransactionType.NegativeCash:
         return "nc";
         break;
+      case TransactionType.Provider:
+        return "provider";
+        break;
+      case TransactionType.Service:
+        return "service";
+        break;
+      case TransactionType.Other:
+        return "other";
+        break;
     }
     return null;
   }
 
   static String getParsedPaymentMethod(PaymentMethod method) {
-    switch(method) {
+    switch (method) {
       case PaymentMethod.Cash:
         return "cash";
         break;
@@ -163,6 +195,15 @@ class CashTransaction {
         return true;
       case TransactionType.NegativeCash:
         return false;
+      case TransactionType.Provider:
+        return false;
+        break;
+      case TransactionType.Service:
+        return false;
+        break;
+      case TransactionType.Other:
+        return false;
+        break;
     }
     return null;
   }

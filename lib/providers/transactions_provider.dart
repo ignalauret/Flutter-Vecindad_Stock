@@ -68,6 +68,9 @@ class TransactionsProvider extends ChangeNotifier {
     final List<CashTransaction> temp = data.entries
         .map((entry) => CashTransaction.fromJson(entry.key, entry.value))
         .toList();
+    int count = 0;
+    temp.forEach((element) {if(element.type == TransactionType.Payment) count++;});
+    print(count);
     return temp;
   }
 

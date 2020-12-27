@@ -97,6 +97,7 @@ class TransactionsProvider extends ChangeNotifier {
       ),
     );
     if (response.statusCode == 200) {
+      // Update products stocks
       if (type == TransactionType.Sell) {
         await context.read<ProductsProvider>().sellProducts(
               products.keys.toList(),
@@ -105,7 +106,12 @@ class TransactionsProvider extends ChangeNotifier {
       }
       transaction.id = jsonDecode(response.body)["name"];
       addLocalTransaction(transaction);
-      if (transaction.isIncome()) {
+      // Update cash
+      if (type == TransactionType.Sell) {
+        if (method == PaymentMethod.Cash) {
+          await updateCash(_cash + transaction.amount);
+        }
+      } else if (transaction.isIncome()) {
         await updateCash(_cash + transaction.amount);
       } else {
         await updateCash(_cash - transaction.amount);
@@ -121,7 +127,11 @@ class TransactionsProvider extends ChangeNotifier {
     final response = await http
         .delete(Constants.kApiPath + "/transactions/${transaction.id}.json");
     if (response.statusCode == 200) {
-      if (transaction.isIncome()) {
+      if (transaction.type == TransactionType.Sell) {
+        if (transaction.paymentMethod == PaymentMethod.Cash) {
+          await updateCash(_cash - transaction.amount);
+        }
+      } else if (transaction.isIncome()) {
         await updateCash(_cash - transaction.amount);
       } else {
         await updateCash(_cash + transaction.amount);
@@ -175,6 +185,7 @@ class TransactionsProvider extends ChangeNotifier {
         }
       }
       if (transaction.type == TransactionType.Sell) {
+        // Sell new products and old products for an amount of (newProductAmount - oldProductAmount).
         final Map<String, int> productsBalance =
             products.map((key, value) => MapEntry(key, value["amount"]));
         transaction.products.forEach((key, value) {
@@ -208,12 +219,35 @@ class TransactionsProvider extends ChangeNotifier {
     return _cash;
   }
 
-  Future<double> get todayCash async {
+  // Future<double> get todayCash async {
+  //   if (_transactions == null) await getTransactions();
+  //   return _transactions.fold<double>(
+  //       0.0,
+  //       (prev, tran) => tran.date.isAfter(Utils.openDate) &&
+  //               tran.date.isBefore(Utils.closeDate)
+  //           ? prev + tran.getRealAmount()
+  //           : prev);
+  // }
+
+  Future<double> get todaySells async {
     if (_transactions == null) await getTransactions();
     return _transactions.fold<double>(
         0.0,
         (prev, tran) => tran.date.isAfter(Utils.openDate) &&
-                tran.date.isBefore(Utils.closeDate)
+                tran.date.isBefore(Utils.closeDate) &&
+                tran.type == TransactionType.Sell
+            ? prev + tran.getRealAmount()
+            : prev);
+  }
+
+  Future<double> get todayCardSells async {
+    if (_transactions == null) await getTransactions();
+    return _transactions.fold<double>(
+        0.0,
+        (prev, tran) => tran.date.isAfter(Utils.openDate) &&
+                tran.date.isBefore(Utils.closeDate) &&
+                tran.type == TransactionType.Sell &&
+                tran.paymentMethod == PaymentMethod.Card
             ? prev + tran.getRealAmount()
             : prev);
   }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
@@ -157,7 +155,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
                   ),
                 ),
                 Spacer(),
-                _buildPaymentOptionSelector(),
+                if(!isEdit)_buildPaymentOptionSelector(),
                 Spacer(),
                 _buildFinalizeButton(),
               ],

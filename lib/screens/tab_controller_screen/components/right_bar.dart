@@ -31,50 +31,32 @@ class _RightBarState extends State<RightBar> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Ingresos",
+              style: CustomStyles.kTitleStyle,
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
           Consumer<TransactionsProvider>(
             builder: (context, transactionsData, _) {
               return Container(
-                height: 100,
+                height: 200,
                 width: double.infinity,
-                child: Row(
+                child: Column(
                   children: [
-                    Expanded(
-                      child: FutureBuilder(
-                        future: transactionsData.cash,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return AccountAmountCard(
-                              label: "Caja:",
-                              amount: snapshot.data,
-                            );
-                          } else {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      ),
-                    ),
+                    _buildAmountCard("Caja:", transactionsData.cash),
                     SizedBox(
                       width: 10,
                     ),
-                    Expanded(
-                      child: FutureBuilder(
-                        future: transactionsData.todayCash,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return AccountAmountCard(
-                              label: "Hoy:",
-                              amount: snapshot.data,
-                            );
-                          } else {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      ),
+                    _buildAmountCard("Hoy:", transactionsData.todaySells),
+                    SizedBox(
+                      width: 10,
                     ),
+                    _buildAmountCard("Tarjeta:", transactionsData.todayCardSells),
                   ],
                 ),
               );
@@ -120,6 +102,26 @@ class _RightBarState extends State<RightBar> {
       ),
     );
   }
+
+  Expanded _buildAmountCard(String label, Future<double> futureValue) {
+    return Expanded(
+      child: FutureBuilder(
+        future: futureValue,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return AccountAmountCard(
+              label: label,
+              amount: snapshot.data,
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    );
+  }
 }
 
 class AccountAmountCard extends StatelessWidget {
@@ -136,9 +138,9 @@ class AccountAmountCard extends StatelessWidget {
       ),
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               alignment: Alignment.centerLeft,
@@ -152,7 +154,7 @@ class AccountAmountCard extends StatelessWidget {
               ),
             ),
             Container(
-              alignment: Alignment.center,
+              alignment: Alignment.centerRight,
               child: Text(
                 "\$" + amount.toStringAsFixed(2),
                 style: amount >= 0.0

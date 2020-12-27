@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
 import 'package:vecindad_stock/components/confirmation_dialog.dart';
@@ -22,13 +23,28 @@ class ProductDetailDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildStat("Código", product.code),
+          Row(
+            children: [
+              _buildStat("Código", product.code),
+              IconButton(
+                icon: Icon(
+                  Icons.copy,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  Clipboard.setData(new ClipboardData(text: product.code));
+                },
+              )
+            ],
+          ),
           _buildStat("Precio", "\$${product.price.toStringAsFixed(2)}"),
           _buildStat("Stock", product.stock.toString()),
           SizedBox(
             height: 20,
           ),
           Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
                 height: 70,

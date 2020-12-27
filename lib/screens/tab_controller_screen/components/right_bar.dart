@@ -7,6 +7,7 @@ import 'package:vecindad_stock/models/product.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/components/new_cart_dialog.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/products_page/components/product_detail_dialog.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
 
@@ -56,7 +57,8 @@ class _RightBarState extends State<RightBar> {
                     SizedBox(
                       width: 10,
                     ),
-                    _buildAmountCard("Tarjeta:", transactionsData.todayCardSells),
+                    _buildAmountCard(
+                        "Tarjeta:", transactionsData.todayCardSells),
                   ],
                 ),
               );
@@ -187,34 +189,42 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Constants.kCardBorderRadius / 2)),
-      child: ListTile(
-        title: Text(
-          product.name,
-          style: CustomStyles.kNormalStyle,
-        ),
-        subtitle: Text(
-          "#" + product.code,
-          style: CustomStyles.kSubtitleStyle,
-        ),
-        trailing: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "\$" + product.price.toString(),
-                style: CustomStyles.kNormalStyle,
-              ),
-              Text(
-                product.stock.toString(),
-                style: CustomStyles.kSubtitleStyle,
-              ),
-            ],
+    return InkWell(
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: (context) => ProductDetailDialog(product));
+      },
+      child: Card(
+        color: Colors.white,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(Constants.kCardBorderRadius / 2)),
+        child: ListTile(
+          title: Text(
+            product.name,
+            style: CustomStyles.kNormalStyle,
+          ),
+          subtitle: Text(
+            "#" + product.code,
+            style: CustomStyles.kSubtitleStyle,
+          ),
+          trailing: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "\$" + product.price.toString(),
+                  style: CustomStyles.kNormalStyle,
+                ),
+                Text(
+                  product.stock.toString(),
+                  style: CustomStyles.kSubtitleStyle,
+                ),
+              ],
+            ),
           ),
         ),
       ),

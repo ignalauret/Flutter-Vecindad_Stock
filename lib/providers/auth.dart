@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class Auth extends ChangeNotifier {
 
-  String _token;
+  String _token = " ";
 
   String get token {
     return _token;

@@ -1,11 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
+import 'package:vecindad_stock/components/search_bar.dart';
 import 'package:vecindad_stock/models/cash_transaction.dart';
 import 'package:vecindad_stock/models/product.dart';
 import 'package:vecindad_stock/providers/products_provider.dart';
 import 'package:vecindad_stock/providers/transactions_provider.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/components/products_cart_list.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/components/right_bar.dart';
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
@@ -29,6 +33,14 @@ class _NewCartDialogState extends State<NewCartDialog> {
   final amountController = TextEditingController(text: "1");
 
   PaymentMethod selectedMethod = PaymentMethod.Cash;
+
+  String search = "";
+
+  void searchFor(String value) {
+    setState(() {
+      search = value;
+    });
+  }
 
   double get totalSum {
     double total = 0.0;
@@ -111,28 +123,48 @@ class _NewCartDialogState extends State<NewCartDialog> {
       ),
       content: Container(
         height: MediaQuery.of(context).size.height * 0.7,
-        width: 700,
+        width: min(MediaQuery.of(context).size.width * 0.85, 900),
         child: Column(
           children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildCodeInput(),
-                SizedBox(
-                  width: 50,
-                ),
-                _buildAmountInput(),
-                SizedBox(
-                  width: 50,
-                ),
-                _buildSubmitButton(),
-              ],
+            Expanded(
+              child: Row(
+                children: [
+                  Container(
+                    width: min(MediaQuery.of(context).size.width * 0.60, 600),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildCodeInput(),
+                            SizedBox(
+                              width: 50,
+                            ),
+                            _buildAmountInput(),
+                            SizedBox(
+                              width: 50,
+                            ),
+                            _buildSubmitButton(),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        _buildProductsList(),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: Colors.black12,
+                    height: double.infinity,
+                    margin: const EdgeInsets.all(10),
+                    width: 2,
+                  ),
+                  _buildSearchProductBar(),
+                ],
+              ),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            _buildProductsList(),
             Row(
               children: [
                 Text(
@@ -167,6 +199,40 @@ class _NewCartDialogState extends State<NewCartDialog> {
                   ],
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded _buildSearchProductBar() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Productos",
+                style: CustomStyles.kTitleStyle,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: 60,
+              width: double.infinity,
+              child: SearchBar(searchFor),
+            ),
+            Expanded(
+              child: SearchedProductsList(
+                context.select<ProductsProvider, List<Product>>(
+                  (data) => data.getSearchedProducts(search),
+                ),
+              ),
             ),
           ],
         ),

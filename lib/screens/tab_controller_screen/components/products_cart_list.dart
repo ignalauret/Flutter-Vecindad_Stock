@@ -20,54 +20,9 @@ class ProductsCartList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.max,
       children: [
-        Container(
-          height: 40,
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Container(
-                width: 120,
-                child: Text(
-                  "Código",
-                  textAlign: TextAlign.left,
-                  style: CustomStyles.kSubtitleStyle,
-                ),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Expanded(
-                child: Text(
-                  "Nombre",
-                  textAlign: TextAlign.left,
-                  style: CustomStyles.kSubtitleStyle,
-                ),
-              ),
-              Container(
-                width: 100,
-                child: Text(
-                  "Precio",
-                  textAlign: TextAlign.center,
-                  style: CustomStyles.kSubtitleStyle,
-                ),
-              ),
-              Container(
-                width: 90,
-                child: Text(
-                  "Cantidad",
-                  textAlign: TextAlign.center,
-                  style: CustomStyles.kSubtitleStyle,
-                ),
-              ),
-              SizedBox(
-                width: 35,
-              ),
-            ],
-          ),
-        ),
+        _buildLabels(),
         Expanded(
           child: ListView.builder(
             itemBuilder: (context, index) => ProductsCartListItem(
@@ -85,6 +40,56 @@ class ProductsCartList extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Container _buildLabels() {
+    return Container(
+      height: 40,
+      width: 500,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            width: 120,
+            child: Text(
+              "Código",
+              textAlign: TextAlign.left,
+              style: CustomStyles.kSubtitleStyle,
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          Expanded(
+            child: Text(
+              "Nombre",
+              textAlign: TextAlign.left,
+              style: CustomStyles.kSubtitleStyle,
+            ),
+          ),
+          Container(
+            width: 100,
+            child: Text(
+              "Precio",
+              textAlign: TextAlign.center,
+              style: CustomStyles.kSubtitleStyle,
+            ),
+          ),
+          Container(
+            width: 90,
+            child: Text(
+              "Cantidad",
+              textAlign: TextAlign.center,
+              style: CustomStyles.kSubtitleStyle,
+            ),
+          ),
+          SizedBox(
+            width: 35,
+          ),
+        ],
+      ),
     );
   }
 }

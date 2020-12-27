@@ -40,14 +40,16 @@ class TransactionsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editLocalTransaction(
-      {String tid,
-      String description,
-      DateTime date,
-      TransactionType type,
-      double amount,
-      Map<String, Map<String, int>> products,
-      String employee}) {
+  void editLocalTransaction({
+    String tid,
+    String description,
+    DateTime date,
+    TransactionType type,
+    double amount,
+    Map<String, Map<String, int>> products,
+    String employee,
+    PaymentMethod method,
+  }) {
     final CashTransaction transaction = getTransactionById(tid);
     transaction.description = description;
     transaction.date = date;
@@ -55,6 +57,7 @@ class TransactionsProvider extends ChangeNotifier {
     transaction.amount = amount;
     transaction.products = products;
     transaction.employeeId = employee;
+    transaction.paymentMethod = method;
     notifyListeners();
   }
 
@@ -76,12 +79,13 @@ class TransactionsProvider extends ChangeNotifier {
     double amount,
     Map<String, Map<String, int>> products,
     String employee,
+    PaymentMethod method,
   }) async {
     final transaction = CashTransaction(
       description: description,
       date: date,
       type: type,
-      paymentMethod: PaymentMethod.Cash,
+      paymentMethod: method,
       employeeId: employee ?? selectedEmployee,
       amount: amount,
       products: products,
@@ -145,6 +149,7 @@ class TransactionsProvider extends ChangeNotifier {
     double amount,
     Map<String, Map<String, int>> products,
     String employee,
+    PaymentMethod method,
   }) async {
     final response = await http.patch(
       Constants.kApiPath + "/transactions/$id.json",
@@ -156,6 +161,7 @@ class TransactionsProvider extends ChangeNotifier {
           "amount": amount,
           "products": products,
           "eid": employee,
+          "paymentMethod": CashTransaction.getParsedPaymentMethod(method),
         },
       ),
     );
@@ -186,6 +192,7 @@ class TransactionsProvider extends ChangeNotifier {
         date: date,
         amount: amount,
         type: type,
+        method: method,
       );
       return true;
     } else {
@@ -203,13 +210,6 @@ class TransactionsProvider extends ChangeNotifier {
 
   Future<double> get todayCash async {
     if (_transactions == null) await getTransactions();
-    final temp = _transactions.fold<double>(
-        0,
-        (prev, tran) => tran.date.isAfter(Utils.openDate) &&
-                tran.date.isBefore(Utils.closeDate)
-            ? prev + 1
-            : prev);
-    print(temp);
     return _transactions.fold<double>(
         0.0,
         (prev, tran) => tran.date.isAfter(Utils.openDate) &&

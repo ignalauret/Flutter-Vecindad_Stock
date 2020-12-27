@@ -46,6 +46,10 @@ class TransactionDetailDialog extends StatelessWidget {
               _buildStat(
                   "Descripción", transaction.description ?? "Sin descripción"),
             SizedBox(
+              height: 4,
+            ),
+            _buildStat("Método de pago", kPaymentMethodsNames[transaction.paymentMethod]),
+            SizedBox(
               height: 20,
             ),
             if (transaction.type == TransactionType.Sell)

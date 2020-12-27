@@ -120,7 +120,7 @@ class CashTransaction {
     return null;
   }
 
-  static String getParsedMethod(PaymentMethod method) {
+  static String getParsedPaymentMethod(PaymentMethod method) {
     switch(method) {
       case PaymentMethod.Cash:
         return "cash";
@@ -138,7 +138,7 @@ class CashTransaction {
       "description": this.description,
       "date": this.date.toString(),
       "type": getParsedType(this.type),
-      "paymentMethod": getParsedMethod(this.paymentMethod),
+      "paymentMethod": getParsedPaymentMethod(this.paymentMethod),
       "eid": this.employeeId,
       "amount": this.amount,
       "products": this.products,

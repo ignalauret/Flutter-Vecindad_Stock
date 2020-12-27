@@ -11,9 +11,7 @@ import 'package:vecindad_stock/screens/tab_controller_screen/components/products
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:universal_html/html.dart' as html;
+import 'package:vecindad_stock/utils/utils.dart';
 
 class NewCartDialog extends StatefulWidget {
   NewCartDialog({this.editTransaction});
@@ -31,6 +29,8 @@ class _NewCartDialogState extends State<NewCartDialog> {
 
   final codeController = TextEditingController();
   final amountController = TextEditingController(text: "1");
+
+  PaymentMethod selectedMethod = PaymentMethod.Cash;
 
   double get totalSum {
     double total = 0.0;
@@ -55,6 +55,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
       prices = widget.editTransaction.products.values
           .map((map) => map["price"])
           .toList();
+      selectedMethod = widget.editTransaction.paymentMethod;
     }
 
     super.didChangeDependencies();
@@ -119,166 +120,47 @@ class _NewCartDialogState extends State<NewCartDialog> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 200,
-                  alignment: Alignment.center,
-                  child: TextField(
-                    style: CustomStyles.kNormalStyle,
-                    controller: codeController,
-                    decoration: InputDecoration(
-                      labelText: "Código",
-                      errorText: codeError ? "Código inválido" : null,
-                    ),
-                    onEditingComplete: submit,
-                    onChanged: (_) {
-                      setState(() {
-                        codeError = false;
-                      });
-                    },
-                  ),
-                ),
+                _buildCodeInput(),
                 SizedBox(
                   width: 50,
                 ),
-                Container(
-                  width: 200,
-                  alignment: Alignment.center,
-                  child: TextField(
-                    style: CustomStyles.kNormalStyle,
-                    controller: amountController,
-                    decoration: InputDecoration(
-                      labelText: "Cantidad",
-                    ),
-                    onEditingComplete: submit,
-                  ),
-                ),
+                _buildAmountInput(),
                 SizedBox(
                   width: 50,
                 ),
-                InkWell(
-                  onTap: () {
-                    submit();
-                  },
-                  child: Container(
-                    height: 50,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Agregar",
-                      style: TextStyle(
-                        color: CustomColors.kAccentColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+                _buildSubmitButton(),
               ],
             ),
             SizedBox(
               height: 20,
             ),
-            Expanded(
-              child: products.isNotEmpty
-                  ? ProductsCartList(
-                      products: products,
-                      amounts: amounts,
-                      prices: prices,
-                      removeProduct: (index) {
-                        setState(() {
-                          products.removeAt(index);
-                          amounts.removeAt(index);
-                          prices.removeAt(index);
-                        });
-                      },
-                      changePrice: (index, price) {
-                        setState(() {
-                          prices[index] = price;
-                        });
-                      },
-                    )
-                  : Center(
-                      child: Text(
-                        "Carrito vacío. Ingresa un código para agregar un producto.",
-                        style:
-                            CustomStyles.kSubtitleStyle.copyWith(fontSize: 20),
-                      ),
-                    ),
-            ),
-            Container(
-              child: Row(
-                children: [
-                  Text(
-                    "Total:",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600,
-                    ),
+            _buildProductsList(),
+            Row(
+              children: [
+                Text(
+                  "Total:",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
                   ),
-                  SizedBox(
-                    width: 40,
+                ),
+                SizedBox(
+                  width: 40,
+                ),
+                Text(
+                  "\$" + totalSum.toStringAsFixed(2),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
                   ),
-                  Text(
-                    "\$" + totalSum.toStringAsFixed(2),
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 50,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Spacer(),
-                  Container(
-                    height: 90,
-                    width: 180,
-                    child: ActionButton(
-                      label: isEdit ? "Guardar" : "Finalizar",
-                      fontSize: 25,
-                      enabled: products.length > 0,
-                      onTap: () {
-                        final transactionsData =
-                            context.read<TransactionsProvider>();
-                        final List<MapEntry<String, Map<String, int>>>
-                            cartProducts = [];
-                        for (int i = 0; i < products.length; i++) {
-                          cartProducts.add(MapEntry(products[i].id,
-                              {"amount": amounts[i], "price": prices[i]}));
-                        }
-                        if (isEdit) {
-                          transactionsData
-                              .editTransaction(
-                            context,
-                            id: widget.editTransaction.id,
-                            description: widget.editTransaction.description,
-                            type: widget.editTransaction.type,
-                            amount: totalSum,
-                            date: widget.editTransaction.date,
-                            employee: widget.editTransaction.employeeId,
-                            products: Map<String, Map<String, int>>.fromEntries(
-                                cartProducts),
-                          )
-                              .then((success) {
-                            Navigator.of(context).pop(true);
-                          });
-                        } else {
-                          transactionsData
-                              .createTransaction(
-                            context,
-                            date: DateTime.now(),
-                            type: TransactionType.Sell,
-                            amount: totalSum,
-                            products: Map<String, Map<String, int>>.fromEntries(
-                                cartProducts),
-                          )
-                              .then((success) {
-                            generatePdf(products, amounts, prices);
-                            Navigator.of(context).pop();
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                Spacer(),
+                _buildPaymentOptionSelector(),
+                Spacer(),
+                _buildFinalizeButton(),
+              ],
             ),
           ],
         ),
@@ -286,76 +168,167 @@ class _NewCartDialogState extends State<NewCartDialog> {
     );
   }
 
-  void generatePdf(
-      List<Product> products, List<int> amounts, List<int> prices) {
-    final pdf = pw.Document();
-    pdf.addPage(pw.Page(
-        pageFormat: PdfPageFormat(4 * PdfPageFormat.cm, 10 * PdfPageFormat.cm,
-            marginAll: 0.3 * PdfPageFormat.cm),
-        build: (pw.Context context) {
-          return pw.Center(
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.center,
-              children: [
-                pw.Text("La Vecindad",
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text("Kiosco - Bar", style: pw.TextStyle(fontSize: 10)),
-                pw.SizedBox(height: 0.2 * PdfPageFormat.cm),
-                pw.Text("Ticket no válido como factura",
-                    style: pw.TextStyle(fontSize: 6)),
-                pw.SizedBox(height: 0.2 * PdfPageFormat.cm),
-                pw.ListView(
-                  children: List.generate(
-                    products.length,
-                    (index) => pw.Row(
-                      children: [
-                        pw.Text(
-                          amounts[index].toString(),
-                          style: pw.TextStyle(fontSize: 6),
-                        ),
-                        pw.SizedBox(width: 0.2 * PdfPageFormat.cm),
-                        pw.Text(
-                          products[index].name.substring(
-                              0, min(15, products[index].name.length)),
-                          style: pw.TextStyle(fontSize: 6),
-                        ),
-                        pw.Spacer(),
-                        pw.SizedBox(width: 0.2 * PdfPageFormat.cm),
-                        pw.Text(
-                          "\$" + (amounts[index] * prices[index]).toString(),
-                          style: pw.TextStyle(fontSize: 6),
-                        ),
-                      ],
-                    ),
-                  ),
+  Container _buildCodeInput() {
+    return Container(
+      width: 200,
+      alignment: Alignment.center,
+      child: TextField(
+        style: CustomStyles.kNormalStyle,
+        controller: codeController,
+        decoration: InputDecoration(
+          labelText: "Código",
+          errorText: codeError ? "Código inválido" : null,
+        ),
+        onEditingComplete: submit,
+        onChanged: (_) {
+          setState(() {
+            codeError = false;
+          });
+        },
+      ),
+    );
+  }
+
+  Container _buildAmountInput() {
+    return Container(
+      width: 70,
+      alignment: Alignment.center,
+      child: TextField(
+        style: CustomStyles.kNormalStyle,
+        controller: amountController,
+        decoration: InputDecoration(
+          labelText: "Cantidad",
+        ),
+        onEditingComplete: submit,
+      ),
+    );
+  }
+
+  Container _buildPaymentOptionSelector() {
+    return Container(
+      height: 50,
+      width: 120,
+      alignment: Alignment.center,
+      child: DropdownButton<PaymentMethod>(
+        isExpanded: true,
+        value: selectedMethod,
+        onChanged: (value) {
+          setState(() {
+            selectedMethod = value;
+          });
+        },
+        items: PaymentMethod.values
+            .map(
+              (method) => DropdownMenuItem(
+                child: Text(
+                  kPaymentMethodsNames[method],
+                  style: CustomStyles.kNormalStyle,
                 ),
-                pw.SizedBox(height: 0.3 * PdfPageFormat.cm),
-                pw.Row(
-                  mainAxisSize: pw.MainAxisSize.max,
-                  mainAxisAlignment: pw.MainAxisAlignment.end,
-                  children: [
-                    pw.Text("TOTAL: \$${totalSum.toStringAsFixed(2)}",
-                        style: pw.TextStyle(
-                          fontSize: 7,
-                          fontWeight: pw.FontWeight.bold,
-                        )),
-                  ],
-                ),
-                pw.SizedBox(height: 0.5 * PdfPageFormat.cm),
-                pw.Text("Gracias por su compra!",
-                    style: pw.TextStyle(fontSize: 6)),
-                pw.SizedBox(
-                    height:
-                        max(1, (4 - products.length)) * 0.2 * PdfPageFormat.cm),
-                pw.Text("------------"),
-              ],
+                value: method,
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+
+  InkWell _buildSubmitButton() {
+    return InkWell(
+      onTap: () {
+        submit();
+      },
+      child: Container(
+        height: 50,
+        alignment: Alignment.center,
+        child: Text(
+          "Agregar",
+          style: TextStyle(
+            color: CustomColors.kAccentColor,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Expanded _buildProductsList() {
+    return Expanded(
+      child: products.isNotEmpty
+          ? ProductsCartList(
+              products: products,
+              amounts: amounts,
+              prices: prices,
+              removeProduct: (index) {
+                setState(() {
+                  products.removeAt(index);
+                  amounts.removeAt(index);
+                  prices.removeAt(index);
+                });
+              },
+              changePrice: (index, price) {
+                setState(() {
+                  prices[index] = price;
+                });
+              },
+            )
+          : Center(
+              child: Text(
+                "Carrito vacío. Ingresa un código para agregar un producto.",
+                style: CustomStyles.kSubtitleStyle.copyWith(fontSize: 20),
+              ),
             ),
-          );
-        }));
-    final bytes = pdf.save();
-    final blob = html.Blob([bytes], 'application/pdf');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    html.window.open(url, "_blank");
-    html.Url.revokeObjectUrl(url);
+    );
+  }
+
+  Container _buildFinalizeButton() {
+    return Container(
+      height: 90,
+      width: 180,
+      child: ActionButton(
+        label: isEdit ? "Guardar" : "Finalizar",
+        fontSize: 25,
+        enabled: products.length > 0,
+        onTap: () {
+          final transactionsData = context.read<TransactionsProvider>();
+          final List<MapEntry<String, Map<String, int>>> cartProducts = [];
+          for (int i = 0; i < products.length; i++) {
+            cartProducts.add(MapEntry(
+                products[i].id, {"amount": amounts[i], "price": prices[i]}));
+          }
+          if (isEdit) {
+            transactionsData
+                .editTransaction(
+              context,
+              id: widget.editTransaction.id,
+              description: widget.editTransaction.description,
+              type: widget.editTransaction.type,
+              amount: totalSum,
+              date: widget.editTransaction.date,
+              employee: widget.editTransaction.employeeId,
+              products: Map<String, Map<String, int>>.fromEntries(cartProducts),
+              method: selectedMethod,
+            )
+                .then((success) {
+              Navigator.of(context).pop(true);
+            });
+          } else {
+            transactionsData
+                .createTransaction(
+              context,
+              date: DateTime.now(),
+              type: TransactionType.Sell,
+              amount: totalSum,
+              products: Map<String, Map<String, int>>.fromEntries(cartProducts),
+              method: selectedMethod,
+            )
+                .then((success) {
+              Utils.generatePdf(products, amounts, prices, totalSum);
+              Navigator.of(context).pop();
+            });
+          }
+        },
+      ),
+    );
   }
 }

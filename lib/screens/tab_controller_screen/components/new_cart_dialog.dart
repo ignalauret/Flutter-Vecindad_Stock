@@ -155,9 +155,17 @@ class _NewCartDialogState extends State<NewCartDialog> {
                   ),
                 ),
                 Spacer(),
-                if(!isEdit)_buildPaymentOptionSelector(),
+                if (!isEdit) _buildPaymentOptionSelector(),
                 Spacer(),
-                _buildFinalizeButton(),
+                Column(
+                  children: [
+                    _buildShowTicketButton(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _buildFinalizeButton(),
+                  ],
+                ),
               ],
             ),
           ],
@@ -279,9 +287,24 @@ class _NewCartDialogState extends State<NewCartDialog> {
     );
   }
 
+  Container _buildShowTicketButton() {
+    return Container(
+      height: 60,
+      width: 180,
+      child: ActionButton(
+        secondary: true,
+        color: Colors.grey,
+        label: "Cuenta",
+        onTap: () {
+          Utils.generatePdf(products, amounts, prices, totalSum);
+        },
+      ),
+    );
+  }
+
   Container _buildFinalizeButton() {
     return Container(
-      height: 90,
+      height: 60,
       width: 180,
       child: ActionButton(
         label: isEdit ? "Guardar" : "Finalizar",

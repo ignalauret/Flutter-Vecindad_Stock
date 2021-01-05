@@ -22,6 +22,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
 
   bool codeError = false;
   bool isEdit = false;
+  bool _tapped = true;
 
   @override
   void initState() {
@@ -48,6 +49,9 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
   }
 
   void submit() {
+    setState(() {
+      _tapped = true;
+    });
     if (isEdit) {
       context
           .read<ProductsProvider>()
@@ -69,6 +73,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
       if (product != null) {
         setState(() {
           codeError = true;
+          _tapped = false;
         });
       } else {
         context
@@ -150,7 +155,8 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
             label: isEdit ? "Guardar" : "Agregar",
             fontSize: 25,
             onTap: submit,
-            enabled: nameController.text.isNotEmpty &&
+            enabled: !_tapped &&
+                nameController.text.isNotEmpty &&
                 codeController.text.isNotEmpty &&
                 priceController.text.isNotEmpty &&
                 stockController.text.isNotEmpty,

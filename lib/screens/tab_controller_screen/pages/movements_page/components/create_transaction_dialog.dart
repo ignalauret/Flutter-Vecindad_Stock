@@ -23,6 +23,7 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
   String selectedEmployeeId;
   TransactionType selectedType = TransactionType.Extraction;
   bool isEdit = false;
+  bool _tapped = false;
 
   @override
   void initState() {
@@ -117,10 +118,14 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
           child: ActionButton(
             label: isEdit ? "Guardar" : "Agregar",
             fontSize: 25,
-            enabled: descriptionController.text.isNotEmpty &&
+            enabled: !_tapped &&
+                descriptionController.text.isNotEmpty &&
                 priceController.text.isNotEmpty &&
                 selectedEmployeeId != null,
             onTap: () {
+              setState(() {
+                _tapped = true;
+              });
               if (isEdit) {
                 context
                     .read<TransactionsProvider>()
@@ -172,39 +177,6 @@ class _CreateTransactionDialogState extends State<CreateTransactionDialog> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTypeSelector(TransactionType type) {
-    if (type == TransactionType.Sell) return Container();
-    return Container(
-      margin: const EdgeInsets.all(10),
-      child: InkWell(
-        onTap: () {
-          setState(() {
-            selectedType = type;
-          });
-        },
-        child: Container(
-          height: 50,
-          width: 150,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color:
-                type == selectedType ? CustomColors.kAccentColor : Colors.white,
-            borderRadius: BorderRadius.circular(Constants.kCardBorderRadius),
-            border: Border.all(color: CustomColors.kAccentColor, width: 2),
-          ),
-          child: Text(
-            kTransactionTypesNames[type],
-            style: CustomStyles.kTitleStyle.copyWith(
-              color: type == selectedType
-                  ? Colors.white
-                  : CustomColors.kAccentColor,
-            ),
-          ),
-        ),
       ),
     );
   }

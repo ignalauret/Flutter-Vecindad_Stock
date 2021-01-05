@@ -28,6 +28,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
   List<int> prices = [];
   bool codeError = false;
   bool isEdit = false;
+  bool _tapped = false;
 
   final codeController = TextEditingController();
   final amountController = TextEditingController(text: "1");
@@ -375,8 +376,11 @@ class _NewCartDialogState extends State<NewCartDialog> {
       child: ActionButton(
         label: isEdit ? "Guardar" : "Finalizar",
         fontSize: 25,
-        enabled: products.length > 0,
+        enabled: products.length > 0 && !_tapped,
         onTap: () {
+          setState(() {
+            _tapped = true;
+          });
           final transactionsData = context.read<TransactionsProvider>();
           final List<MapEntry<String, Map<String, int>>> cartProducts = [];
           for (int i = 0; i < products.length; i++) {

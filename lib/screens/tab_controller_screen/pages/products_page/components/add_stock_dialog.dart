@@ -17,6 +17,7 @@ class _AddStockDialogState extends State<AddStockDialog> {
   final List<Product> products = [];
   final List<int> amounts = [];
   bool codeError = false;
+  bool _tapped = false;
 
   final codeController = TextEditingController();
   final amountController = TextEditingController(text: "1");
@@ -161,7 +162,11 @@ class _AddStockDialogState extends State<AddStockDialog> {
                     child: ActionButton(
                       label: "Finalizar",
                       fontSize: 25,
+                      enabled: !_tapped && products.length > 0,
                       onTap: () {
+                        setState(() {
+                          _tapped = true;
+                        });
                         final productsData = context.read<ProductsProvider>();
                         productsData
                             .addStocks(products.map((prod) => prod.id).toList(),

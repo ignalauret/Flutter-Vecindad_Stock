@@ -27,7 +27,7 @@ class _SummaryPageState extends State<SummaryPage> {
           Expanded(
             child: ListView.builder(
               itemBuilder: (context, index) => Container(
-                height: 230,
+                height: 330,
                 width: double.infinity,
                 child: FutureBuilder<Map<String, double>>(
                   future: context.watch<TransactionsProvider>().getDateSummary(
@@ -52,7 +52,15 @@ class _SummaryPageState extends State<SummaryPage> {
   }
 
   SummaryCard _buildSummaryCard(DateTime date, Map<String, double> summary) {
-    return SummaryCard(date, summary["sells"], summary["cardSells"],
-        summary["cashSells"], summary["tips"]);
+    return SummaryCard(
+      date: date,
+      sells: summary["sells"],
+      cardSells: summary["cardSells"],
+      cashSells: summary["cashSells"],
+      tips: summary["tips"],
+      payments: summary["payments"],
+      salaries: summary["salaries"],
+      services: summary["services"],
+    );
   }
 }

@@ -9,14 +9,38 @@ import 'package:flutter/material.dart';
 import 'custom_styles.dart';
 
 class Utils {
-  static List<String> kDays = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-  static List<String> kMonths = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  static List<String> kDays = [
+    "",
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+    "Domingo"
+  ];
+  static List<String> kMonths = [
+    "",
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre"
+  ];
 
   static String parseLargeDate(DateTime date) {
     final day = kDays[date.weekday];
     final month = kMonths[date.month];
     return "$day ${date.day} de $month, ${date.year}";
   }
+
   static bool isSameDay(DateTime d1, DateTime d2) {
     return d1.day == d2.day && d1.month == d2.month && d1.year == d2.year;
   }
@@ -31,10 +55,15 @@ class Utils {
   }
 
   static Text formattedAmount(double amount) {
+    if (amount == 0.0)
+      return Text(
+        "\$0",
+        style: CustomStyles.kIncomeStyle.copyWith(color: Colors.black),
+      );
     return Text(
       amount >= 0
           ? "+\$" + amount.toStringAsFixed(2)
-          : "-\$" + amount.toStringAsFixed(2),
+          : "-\$" + (amount * -1).toStringAsFixed(2),
       textAlign: TextAlign.center,
       style:
           amount >= 0 ? CustomStyles.kIncomeStyle : CustomStyles.kExpenseStyle,

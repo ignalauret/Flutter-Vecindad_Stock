@@ -253,50 +253,45 @@ class TransactionsProvider extends ChangeNotifier {
             : prev);
   }
 
-  Future<double> getDateSells(DateTime date) async {
-    if (_transactions == null) await getTransactions();
-    return _transactions.fold<double>(
-        0.0,
-        (prev, tran) => tran.date.isAfter(Utils.getOpenDate(date)) &&
-                tran.date.isBefore(Utils.getCloseDate(date)) &&
-                tran.type == TransactionType.Sell
-            ? prev + tran.getRealAmount()
-            : prev);
-  }
-
-  Future<double> getDateCardSells(DateTime date) async {
-    if (_transactions == null) await getTransactions();
-    return _transactions.fold<double>(
-        0.0,
-        (prev, tran) => tran.date.isAfter(Utils.getOpenDate(date)) &&
-                tran.date.isBefore(Utils.getCloseDate(date)) &&
-                tran.type == TransactionType.Sell &&
-                tran.paymentMethod == PaymentMethod.Card
-            ? prev + tran.getRealAmount()
-            : prev);
-  }
-
-  Future<double> getDateTips(DateTime date) async {
-    if (_transactions == null) await getTransactions();
-    return _transactions.fold<double>(
-        0.0,
-        (prev, tran) => tran.date.isAfter(Utils.getOpenDate(date)) &&
-                tran.date.isBefore(Utils.getCloseDate(date)) &&
-                tran.type == TransactionType.PositiveTip
-            ? prev + tran.getRealAmount()
-            : prev);
-  }
-
   Future<Map<String, double>> getDateSummary(DateTime date) async {
-    final sells = await getDateSells(date);
-    final cardSells = await getDateCardSells(date);
-    final cashSells = sells - cardSells;
-    final tips = await getDateTips(date);
+    if (_transactions == null) await getTransactions();
+    double sells = 0.0;
+    double cardSells = 0.0;
+    double cashSells = 0.0;
+    double tips = 0.0;
+    double salaries = 0.0;
+    double payments = 0.0;
+    double services = 0.0;
+    for (CashTransaction transaction in _transactions) {
+      // Check if it is from the date.
+      if (transaction.date.isAfter(Utils.getOpenDate(date)) &&
+          transaction.date.isBefore(Utils.getCloseDate(date))) {
+        if (transaction.type == TransactionType.Sell) {
+          sells += transaction.amount;
+          // Add to cash or card sells.
+          if (transaction.paymentMethod == PaymentMethod.Cash)
+            cashSells += transaction.amount;
+          else
+            cardSells += transaction.amount;
+        } else if (transaction.type == TransactionType.PositiveTip) {
+          tips += transaction.amount;
+        } else if (transaction.type == TransactionType.Payment) {
+          payments -= transaction.amount;
+        } else if (transaction.type == TransactionType.Salary) {
+          salaries -= transaction.amount;
+        } else if (transaction.type == TransactionType.Service) {
+          services -= transaction.amount;
+        }
+      }
+    }
     return {
       "sells": sells,
       "cardSells": cardSells,
       "cashSells": cashSells,
       "tips": tips,
+      "salaries": salaries,
+      "payments": payments,
+      "services": services,
     };
   }
 

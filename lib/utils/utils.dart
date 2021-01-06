@@ -4,9 +4,19 @@ import 'package:printing/printing.dart';
 import 'package:vecindad_stock/models/product.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:universal_html/html.dart' as html;
+import 'package:flutter/material.dart';
+
+import 'custom_styles.dart';
 
 class Utils {
+  static List<String> kDays = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+  static List<String> kMonths = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+  static String parseLargeDate(DateTime date) {
+    final day = kDays[date.weekday];
+    final month = kMonths[date.month];
+    return "$day ${date.day} de $month, ${date.year}";
+  }
   static bool isSameDay(DateTime d1, DateTime d2) {
     return d1.day == d2.day && d1.month == d2.month && d1.year == d2.year;
   }
@@ -20,6 +30,17 @@ class Utils {
     }
   }
 
+  static Text formattedAmount(double amount) {
+    return Text(
+      amount >= 0
+          ? "+\$" + amount.toStringAsFixed(2)
+          : "-\$" + amount.toStringAsFixed(2),
+      textAlign: TextAlign.center,
+      style:
+          amount >= 0 ? CustomStyles.kIncomeStyle : CustomStyles.kExpenseStyle,
+    );
+  }
+
   static DateTime get openDate {
     final now = DateTime.now().subtract(Duration(hours: 7));
     return DateTime(now.year, now.month, now.day, 7);
@@ -28,6 +49,16 @@ class Utils {
   static DateTime get closeDate {
     final tomorrow = DateTime.now().add(Duration(hours: 17));
     return DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 7);
+  }
+
+  static DateTime getOpenDate(DateTime date) {
+    final openDate = date.subtract(Duration(hours: 7));
+    return DateTime(openDate.year, openDate.month, openDate.day, 7);
+  }
+
+  static DateTime getCloseDate(DateTime date) {
+    final closeDate = date.add(Duration(hours: 17));
+    return DateTime(closeDate.year, closeDate.month, closeDate.day, 7);
   }
 
   static void generatePdf(List<Product> products, List<int> amounts,

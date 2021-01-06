@@ -9,7 +9,6 @@ import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_pag
 import 'package:vecindad_stock/utils/constants.dart';
 import 'package:vecindad_stock/utils/custom_colors.dart';
 import 'package:vecindad_stock/utils/custom_styles.dart';
-import 'package:vecindad_stock/utils/utils.dart';
 
 class TransactionsList extends StatelessWidget {
   TransactionsList({this.startDate, this.endDate, this.showDate = false});

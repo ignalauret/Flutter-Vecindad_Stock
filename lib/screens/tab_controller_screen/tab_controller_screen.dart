@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/home_page/home_page.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/movements_page/movements_page.dart';
 import 'package:vecindad_stock/screens/tab_controller_screen/pages/products_page/products_page.dart';
+import 'package:vecindad_stock/screens/tab_controller_screen/pages/summary_page/summary_page.dart';
 
 
 import 'components/right_bar.dart';
@@ -19,6 +20,7 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
     HomePage(),
     ProductsPage(),
     MovementsPage(),
+    SummaryPage(),
   ];
 
 

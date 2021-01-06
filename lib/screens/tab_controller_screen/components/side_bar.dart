@@ -87,6 +87,7 @@ class SideBar extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
+          _buildMenuItem(3, "Resúmen", Icons.sort),
           Spacer(),
           InkWell(
             onTap: () {

@@ -253,6 +253,53 @@ class TransactionsProvider extends ChangeNotifier {
             : prev);
   }
 
+  Future<double> getDateSells(DateTime date) async {
+    if (_transactions == null) await getTransactions();
+    return _transactions.fold<double>(
+        0.0,
+        (prev, tran) => tran.date.isAfter(Utils.getOpenDate(date)) &&
+                tran.date.isBefore(Utils.getCloseDate(date)) &&
+                tran.type == TransactionType.Sell
+            ? prev + tran.getRealAmount()
+            : prev);
+  }
+
+  Future<double> getDateCardSells(DateTime date) async {
+    if (_transactions == null) await getTransactions();
+    return _transactions.fold<double>(
+        0.0,
+        (prev, tran) => tran.date.isAfter(Utils.getOpenDate(date)) &&
+                tran.date.isBefore(Utils.getCloseDate(date)) &&
+                tran.type == TransactionType.Sell &&
+                tran.paymentMethod == PaymentMethod.Card
+            ? prev + tran.getRealAmount()
+            : prev);
+  }
+
+  Future<double> getDateTips(DateTime date) async {
+    if (_transactions == null) await getTransactions();
+    return _transactions.fold<double>(
+        0.0,
+        (prev, tran) => tran.date.isAfter(Utils.getOpenDate(date)) &&
+                tran.date.isBefore(Utils.getCloseDate(date)) &&
+                tran.type == TransactionType.PositiveTip
+            ? prev + tran.getRealAmount()
+            : prev);
+  }
+
+  Future<Map<String, double>> getDateSummary(DateTime date) async {
+    final sells = await getDateSells(date);
+    final cardSells = await getDateCardSells(date);
+    final cashSells = sells - cardSells;
+    final tips = await getDateTips(date);
+    return {
+      "sells": sells,
+      "cardSells": cardSells,
+      "cashSells": cashSells,
+      "tips": tips,
+    };
+  }
+
   Future<void> getCash() async {
     _cash = await fetchCash();
   }

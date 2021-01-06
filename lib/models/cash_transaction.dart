@@ -8,6 +8,8 @@ enum TransactionType {
   Salary,
   PositiveCash,
   NegativeCash,
+  PositiveTip,
+  NegativeTip,
   Provider,
   Service,
   Other
@@ -22,6 +24,8 @@ const Map<TransactionType, String> kTransactionTypesNames = {
   TransactionType.Salary: "Salario",
   TransactionType.PositiveCash: "Sumar Caja",
   TransactionType.NegativeCash: "Restar Caja",
+  TransactionType.PositiveTip: "Sumar Propina",
+  TransactionType.NegativeTip: "Restar Propina",
   TransactionType.Provider: "Proveedor",
   TransactionType.Service: "Servicio",
   TransactionType.Other: "Gastos Varios",
@@ -83,6 +87,12 @@ class CashTransaction {
       case "nc":
         type = TransactionType.NegativeCash;
         break;
+      case "positive_tip":
+        type = TransactionType.PositiveTip;
+        break;
+      case "negative_tip":
+        type = TransactionType.NegativeTip;
+        break;
       case "provider":
         type = TransactionType.Provider;
         break;
@@ -132,22 +142,20 @@ class CashTransaction {
         return "d";
       case TransactionType.Salary:
         return "sa";
-        break;
       case TransactionType.PositiveCash:
         return "pc";
-        break;
       case TransactionType.NegativeCash:
         return "nc";
-        break;
       case TransactionType.Provider:
         return "provider";
-        break;
       case TransactionType.Service:
         return "service";
-        break;
       case TransactionType.Other:
         return "other";
-        break;
+      case TransactionType.PositiveTip:
+        return "positive_tip";
+      case TransactionType.NegativeTip:
+        return "negative_tip";
     }
     return null;
   }
@@ -197,13 +205,14 @@ class CashTransaction {
         return false;
       case TransactionType.Provider:
         return false;
-        break;
       case TransactionType.Service:
         return false;
-        break;
       case TransactionType.Other:
         return false;
-        break;
+      case TransactionType.PositiveTip:
+        return true;
+      case TransactionType.NegativeTip:
+        return false;
     }
     return null;
   }

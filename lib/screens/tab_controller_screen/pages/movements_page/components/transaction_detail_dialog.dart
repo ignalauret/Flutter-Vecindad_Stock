@@ -135,6 +135,7 @@ class TransactionDetailDialog extends StatelessWidget {
   }
 
   Container _buildStat(String label, String value) {
+    print("label: $value");
     return Container(
       child: Row(
         children: [

@@ -361,7 +361,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
       child: ActionButton(
         secondary: true,
         color: Colors.grey,
-        label: "Cuenta",
+        label: "Imprimir",
         onTap: () {
           Utils.generatePdf(products, amounts, prices, totalSum);
         },
@@ -414,7 +414,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
               method: selectedMethod,
             )
                 .then((success) {
-              Utils.generatePdf(products, amounts, prices, totalSum);
+              //Utils.generatePdf(products, amounts, prices, totalSum);
               Navigator.of(context).pop();
             });
           }

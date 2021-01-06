@@ -45,7 +45,7 @@ class _RightBarState extends State<RightBar> {
           Consumer<TransactionsProvider>(
             builder: (context, transactionsData, _) {
               return Container(
-                height: 200,
+                height: 250,
                 width: double.infinity,
                 child: Column(
                   children: [
@@ -53,12 +53,16 @@ class _RightBarState extends State<RightBar> {
                     SizedBox(
                       width: 10,
                     ),
-                    _buildAmountCard("Hoy:", transactionsData.todaySells),
+                    _buildAmountCard("Ventas:", transactionsData.todaySells),
                     SizedBox(
                       width: 10,
                     ),
                     _buildAmountCard(
                         "Tarjeta:", transactionsData.todayCardSells),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    _buildAmountCard("Propina:", transactionsData.todayTips),
                   ],
                 ),
               );

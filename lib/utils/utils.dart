@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:printing/printing.dart';
 import 'package:vecindad_stock/models/product.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -96,9 +97,10 @@ class Utils {
           );
         }));
     final bytes = pdf.save();
-    final blob = html.Blob([bytes], 'application/pdf');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    html.window.open(url, "_blank");
-    html.Url.revokeObjectUrl(url);
+    Printing.layoutPdf(onLayout: (_) => bytes);
+    // final blob = html.Blob([bytes], 'application/pdf');
+    // final url = html.Url.createObjectUrlFromBlob(blob);
+    // html.window.open(url, "_blank");
+    // html.Url.revokeObjectUrl(url);
   }
 }

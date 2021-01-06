@@ -68,9 +68,6 @@ class TransactionsProvider extends ChangeNotifier {
     final List<CashTransaction> temp = data.entries
         .map((entry) => CashTransaction.fromJson(entry.key, entry.value))
         .toList();
-    int count = 0;
-    temp.forEach((element) {if(element.type == TransactionType.Payment) count++;});
-    print(count);
     return temp;
   }
 
@@ -222,16 +219,6 @@ class TransactionsProvider extends ChangeNotifier {
     return _cash;
   }
 
-  // Future<double> get todayCash async {
-  //   if (_transactions == null) await getTransactions();
-  //   return _transactions.fold<double>(
-  //       0.0,
-  //       (prev, tran) => tran.date.isAfter(Utils.openDate) &&
-  //               tran.date.isBefore(Utils.closeDate)
-  //           ? prev + tran.getRealAmount()
-  //           : prev);
-  // }
-
   Future<double> get todaySells async {
     if (_transactions == null) await getTransactions();
     return _transactions.fold<double>(
@@ -251,6 +238,17 @@ class TransactionsProvider extends ChangeNotifier {
                 tran.date.isBefore(Utils.closeDate) &&
                 tran.type == TransactionType.Sell &&
                 tran.paymentMethod == PaymentMethod.Card
+            ? prev + tran.getRealAmount()
+            : prev);
+  }
+
+  Future<double> get todayTips async {
+    if (_transactions == null) await getTransactions();
+    return _transactions.fold<double>(
+        0.0,
+        (prev, tran) => tran.date.isAfter(Utils.openDate) &&
+                tran.date.isBefore(Utils.closeDate) &&
+                tran.type == TransactionType.PositiveTip
             ? prev + tran.getRealAmount()
             : prev);
   }

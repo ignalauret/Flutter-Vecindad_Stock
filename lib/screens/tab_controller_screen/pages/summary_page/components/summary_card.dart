@@ -4,16 +4,19 @@ import 'package:vecindad_stock/utils/custom_styles.dart';
 import 'package:vecindad_stock/utils/utils.dart';
 
 class SummaryCard extends StatelessWidget {
-  SummaryCard(
-      {this.date,
-      this.sells,
-      this.cardSells,
-      this.cashSells,
-      this.tips,
-      this.payments,
-      this.services,
-      this.salaries});
-  final DateTime date;
+  SummaryCard({
+    this.date,
+    this.sells,
+    this.cardSells,
+    this.cashSells,
+    this.tips,
+    this.payments,
+    this.services,
+    this.salaries,
+    this.providers,
+    this.others,
+  });
+  final String date;
   final double sells;
   final double cardSells;
   final double cashSells;
@@ -21,6 +24,8 @@ class SummaryCard extends StatelessWidget {
   final double payments;
   final double salaries;
   final double services;
+  final double providers;
+  final double others;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,7 @@ class SummaryCard extends StatelessWidget {
             Container(
               alignment: Alignment.centerLeft,
               child: Text(
-                Utils.parseLargeDate(date),
+                date,
                 style: CustomStyles.kSubtitleStyle,
               ),
             ),
@@ -48,6 +53,8 @@ class SummaryCard extends StatelessWidget {
             _buildSummaryStat("Pagos:", payments),
             _buildSummaryStat("Servicios:", services),
             _buildSummaryStat("Salarios:", salaries),
+            _buildSummaryStat("Proveedores:", providers),
+            _buildSummaryStat("Gastos Varios:", others),
           ],
         ),
       ),

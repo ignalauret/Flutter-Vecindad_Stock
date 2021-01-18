@@ -262,25 +262,54 @@ class TransactionsProvider extends ChangeNotifier {
     double salaries = 0.0;
     double payments = 0.0;
     double services = 0.0;
+    double providers = 0.0;
+    double others = 0.0;
     for (CashTransaction transaction in _transactions) {
       // Check if it is from the date.
       if (transaction.date.isAfter(Utils.getOpenDate(date)) &&
           transaction.date.isBefore(Utils.getCloseDate(date))) {
-        if (transaction.type == TransactionType.Sell) {
-          sells += transaction.amount;
-          // Add to cash or card sells.
-          if (transaction.paymentMethod == PaymentMethod.Cash)
-            cashSells += transaction.amount;
-          else
-            cardSells += transaction.amount;
-        } else if (transaction.type == TransactionType.PositiveTip) {
-          tips += transaction.amount;
-        } else if (transaction.type == TransactionType.Payment) {
-          payments -= transaction.amount;
-        } else if (transaction.type == TransactionType.Salary) {
-          salaries -= transaction.amount;
-        } else if (transaction.type == TransactionType.Service) {
-          services -= transaction.amount;
+        switch (transaction.type) {
+          case TransactionType.Sell:
+            sells += transaction.amount;
+            // Add to cash or card sells.
+            if (transaction.paymentMethod == PaymentMethod.Cash)
+              cashSells += transaction.amount;
+            else
+              cardSells += transaction.amount;
+            break;
+          case TransactionType.Extraction:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.Payment:
+            payments -= transaction.amount;
+            break;
+          case TransactionType.Deposit:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.Salary:
+            salaries -= transaction.amount;
+            break;
+          case TransactionType.PositiveCash:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.NegativeCash:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.PositiveTip:
+            tips += transaction.amount;
+            break;
+          case TransactionType.NegativeTip:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.Provider:
+            providers -= transaction.amount;
+            break;
+          case TransactionType.Service:
+            services -= transaction.amount;
+            break;
+          case TransactionType.Other:
+            others -= transaction.amount;
+            break;
         }
       }
     }
@@ -292,6 +321,83 @@ class TransactionsProvider extends ChangeNotifier {
       "salaries": salaries,
       "payments": payments,
       "services": services,
+      "providers": providers,
+      "others": others,
+    };
+  }
+
+  Future<Map<String, double>> getMonthSummary(int month, int year) async {
+    if (_transactions == null) await getTransactions();
+    double sells = 0.0;
+    double cardSells = 0.0;
+    double cashSells = 0.0;
+    double tips = 0.0;
+    double salaries = 0.0;
+    double payments = 0.0;
+    double services = 0.0;
+    double providers = 0.0;
+    double others = 0.0;
+    for (CashTransaction transaction in _transactions) {
+      // Check if it is from the date.
+      if (transaction.date
+              .isAfter(Utils.getOpenDate(DateTime(year, month, 1, 10))) &&
+          transaction.date.isBefore(Utils.getCloseDate(
+              DateTime(month == 12 ? year + 1 : year, month % 12 + 1, 1)))) {
+        switch (transaction.type) {
+          case TransactionType.Sell:
+            sells += transaction.amount;
+            // Add to cash or card sells.
+            if (transaction.paymentMethod == PaymentMethod.Cash)
+              cashSells += transaction.amount;
+            else
+              cardSells += transaction.amount;
+            break;
+          case TransactionType.Extraction:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.Payment:
+            payments -= transaction.amount;
+            break;
+          case TransactionType.Deposit:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.Salary:
+            salaries -= transaction.amount;
+            break;
+          case TransactionType.PositiveCash:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.NegativeCash:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.PositiveTip:
+            tips += transaction.amount;
+            break;
+          case TransactionType.NegativeTip:
+            // TODO: Handle this case.
+            break;
+          case TransactionType.Provider:
+            providers -= transaction.amount;
+            break;
+          case TransactionType.Service:
+            services -= transaction.amount;
+            break;
+          case TransactionType.Other:
+            others -= transaction.amount;
+            break;
+        }
+      }
+    }
+    return {
+      "sells": sells,
+      "cardSells": cardSells,
+      "cashSells": cashSells,
+      "tips": tips,
+      "salaries": salaries,
+      "payments": payments,
+      "services": services,
+      "providers": providers,
+      "others": others,
     };
   }
 

@@ -2,7 +2,7 @@ class Product {
   String id;
   String code;
   String name;
-  double price;
+  int price;
   int stock;
 
   Product({
@@ -18,7 +18,7 @@ class Product {
       id: id,
       code: json["code"],
       name: json["name"],
-      price: json["price"] * 1.0,
+      price: json["price"],
       stock: json["stock"],
     );
   }

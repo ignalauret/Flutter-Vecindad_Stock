@@ -401,6 +401,17 @@ class TransactionsProvider extends ChangeNotifier {
     };
   }
 
+  Future<List<CashTransaction>> getSummaryTransactionsOfType(
+      TransactionType type, int month, int year) async {
+    final transactionList = await transactions;
+    return transactionList
+        .where((transaction) =>
+            transaction.date.month == month &&
+            transaction.date.year == year &&
+            transaction.type == type)
+        .toList();
+  }
+
   Future<void> getCash() async {
     _cash = await fetchCash();
   }

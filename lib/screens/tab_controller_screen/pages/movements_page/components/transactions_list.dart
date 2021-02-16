@@ -80,7 +80,7 @@ class TransactionsList extends StatelessWidget {
                               ),
                             ),
                             SizedBox(
-                              width: 150,
+                              width: 100,
                             ),
                           ],
                         ),
@@ -173,9 +173,6 @@ class TransactionListItem extends StatelessWidget {
                     ? CustomStyles.kIncomeStyle
                     : CustomStyles.kExpenseStyle,
               ),
-            ),
-            SizedBox(
-              width: 50,
             ),
             InkWell(
               onTap: () {

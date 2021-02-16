@@ -6,6 +6,8 @@ import 'package:vecindad_stock/utils/custom_styles.dart';
 import 'package:vecindad_stock/utils/utils.dart';
 
 class SummaryPage extends StatefulWidget {
+  SummaryPage(this.showSummary);
+  final Function(int, int) showSummary;
   @override
   _SummaryPageState createState() => _SummaryPageState();
 }
@@ -58,38 +60,43 @@ class _SummaryPageState extends State<SummaryPage> {
     );
   }
 
-  FutureBuilder<Map<String, double>> _buildSummaryCard(
-      String range, int index) {
-    if (range == "Diario") {
-      return FutureBuilder<Map<String, double>>(
-        future: context
-            .read<TransactionsProvider>()
-            .getDateSummary(DateTime.now().subtract(Duration(days: index))),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return _buildDailySummaryCard(
-                DateTime.now().subtract(Duration(days: index)), snapshot.data);
-          } else
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-        },
-      );
-    } else if (range == "Mensual") {
-      final month = (DateTime.now().month - index - 1) % 12 + 1;
-      final year = month == 1 ? 2021 : 2020;
-      return FutureBuilder<Map<String, double>>(
-        future:
-            context.read<TransactionsProvider>().getMonthSummary(month, year),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return _buildMonthlySummaryCard(month, year, snapshot.data);
-          } else
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-        },
-      );
+  Widget _buildSummaryCard(String range, int index) {
+    switch (range) {
+      case "Diario":
+        return FutureBuilder<Map<String, double>>(
+          future: context
+              .read<TransactionsProvider>()
+              .getDateSummary(DateTime.now().subtract(Duration(days: index))),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return _buildDailySummaryCard(
+                  DateTime.now().subtract(Duration(days: index)),
+                  snapshot.data);
+            } else
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+          },
+        );
+      case "Mensual":
+        final month = (DateTime.now().month - index - 1) % 12 + 1;
+        final year = DateTime.now().subtract(Duration(days: 30 * index)).year;
+        return InkWell(
+          onTap: () => widget.showSummary(month, year),
+          child: FutureBuilder<Map<String, double>>(
+            future: context
+                .read<TransactionsProvider>()
+                .getMonthSummary(month, year),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return _buildMonthlySummaryCard(month, year, snapshot.data);
+              } else
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+            },
+          ),
+        );
     }
   }
 

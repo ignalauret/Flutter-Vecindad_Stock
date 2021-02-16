@@ -59,7 +59,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
             widget.editProduct.id,
             codeController.text,
             nameController.text,
-            double.parse(priceController.text),
+            int.parse(priceController.text),
             int.parse(stockController.text),
           )
           .then((value) {
@@ -81,7 +81,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
             .createProduct(
               codeController.text,
               nameController.text,
-              double.parse(priceController.text),
+              int.parse(priceController.text),
               int.parse(stockController.text),
             )
             .then((value) {

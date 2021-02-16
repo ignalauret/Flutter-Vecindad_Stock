@@ -41,7 +41,7 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   void editLocalProduct(
-      String id, String name, String code, double price, int stock) {
+      String id, String name, String code, int price, int stock) {
     final product = getProductById(id);
     product.name = name;
     product.code = code;
@@ -61,7 +61,7 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   Future<bool> createProduct(
-      String code, String name, double price, int stock) async {
+      String code, String name, int price, int stock) async {
     final product = Product(
       code: code,
       name: name,
@@ -95,7 +95,7 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   Future<bool> editProduct(
-      String id, String code, String name, double price, int stock) async {
+      String id, String code, String name, int price, int stock) async {
     final response = await http.patch(
       Constants.kApiPath + "/products/$id.json",
       body: jsonEncode(

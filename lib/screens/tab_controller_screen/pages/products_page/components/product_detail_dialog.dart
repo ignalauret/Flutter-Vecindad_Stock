@@ -37,7 +37,8 @@ class ProductDetailDialog extends StatelessWidget {
               )
             ],
           ),
-          _buildStat("Precio", "\$${product.price.toStringAsFixed(2)}"),
+          _buildStat("Precio", "\$${product.price}"),
+          _buildStat("Precio Bar", "\$${product.onBarPrice}"),
           _buildStat("Stock", product.stock.toString()),
           SizedBox(
             height: 20,
@@ -101,6 +102,7 @@ class ProductDetailDialog extends StatelessWidget {
 
   Container _buildStat(String label, String value) {
     return Container(
+      margin: const EdgeInsets.only(top: 3),
       child: Row(
         children: [
           Text(

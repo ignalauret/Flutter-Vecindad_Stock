@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Center(
         child: Container(
-          height: 448,
           width: 400,
           child: Card(
             elevation: 2,
@@ -35,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
               padding:
                   const EdgeInsets.symmetric(vertical: 30.0, horizontal: 60),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     height: 120,

@@ -27,7 +27,9 @@ class ProductsProvider extends ChangeNotifier {
     if (Utils.isNumber(search)) {
       return _products.where((prod) => prod.code.contains(search)).toList();
     }
-    return _products.where((prod) => prod.name.toLowerCase().contains(search.toLowerCase())).toList();
+    return _products
+        .where((prod) => prod.name.toLowerCase().contains(search.toLowerCase()))
+        .toList();
   }
 
   void addLocalProduct(Product product) {
@@ -40,12 +42,13 @@ class ProductsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editLocalProduct(
-      String id, String name, String code, int price, int stock) {
+  void editLocalProduct(String id, String name, String code, int price,
+      int onBarPrice, int stock) {
     final product = getProductById(id);
     product.name = name;
     product.code = code;
     product.price = price;
+    product.onBarPrice = onBarPrice;
     product.stock = stock;
     notifyListeners();
   }
@@ -61,11 +64,12 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   Future<bool> createProduct(
-      String code, String name, int price, int stock) async {
+      String code, String name, int price, int onBarPrice, int stock) async {
     final product = Product(
       code: code,
       name: name,
       price: price,
+      onBarPrice: onBarPrice,
       stock: stock,
     );
     final response = await http.post(
@@ -94,8 +98,8 @@ class ProductsProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> editProduct(
-      String id, String code, String name, int price, int stock) async {
+  Future<bool> editProduct(String id, String code, String name, int price,
+      int onBarPrice, int stock) async {
     final response = await http.patch(
       Constants.kApiPath + "/products/$id.json",
       body: jsonEncode(
@@ -103,13 +107,14 @@ class ProductsProvider extends ChangeNotifier {
           "code": code,
           "name": name,
           "price": price,
+          "onBarPrice": onBarPrice,
           "stock": stock,
         },
       ),
     );
 
     if (response.statusCode == 200) {
-      editLocalProduct(id, name, code, price, stock);
+      editLocalProduct(id, name, code, price, onBarPrice, stock);
       return true;
     } else {
       return false;

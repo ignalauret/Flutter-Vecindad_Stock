@@ -49,6 +49,7 @@ class TransactionsProvider extends ChangeNotifier {
     Map<String, Map<String, int>> products,
     String employee,
     PaymentMethod method,
+    int cashPayment,
   }) {
     final CashTransaction transaction = getTransactionById(tid);
     transaction.description = description;
@@ -58,6 +59,7 @@ class TransactionsProvider extends ChangeNotifier {
     transaction.products = products;
     transaction.employeeId = employee;
     transaction.paymentMethod = method;
+    transaction.cashPaymentAmount = cashPayment;
     notifyListeners();
   }
 
@@ -77,6 +79,7 @@ class TransactionsProvider extends ChangeNotifier {
     DateTime date,
     TransactionType type,
     double amount,
+    int cashPayment,
     Map<String, Map<String, int>> products,
     String employee,
     PaymentMethod method,
@@ -86,6 +89,7 @@ class TransactionsProvider extends ChangeNotifier {
       date: date,
       type: type,
       paymentMethod: method,
+      cashPaymentAmount: cashPayment,
       employeeId: employee ?? selectedEmployee,
       amount: amount,
       products: products,
@@ -110,6 +114,8 @@ class TransactionsProvider extends ChangeNotifier {
       if (type == TransactionType.Sell) {
         if (method == PaymentMethod.Cash) {
           await updateCash(_cash + transaction.amount);
+        } else if (method == PaymentMethod.Mixed) {
+          await updateCash(_cash + transaction.cashPaymentAmount);
         }
       } else if (transaction.isIncome()) {
         await updateCash(_cash + transaction.amount);
@@ -130,6 +136,8 @@ class TransactionsProvider extends ChangeNotifier {
       if (transaction.type == TransactionType.Sell) {
         if (transaction.paymentMethod == PaymentMethod.Cash) {
           await updateCash(_cash - transaction.amount);
+        } else if (transaction.paymentMethod == PaymentMethod.Mixed) {
+          await updateCash(_cash - transaction.cashPaymentAmount);
         }
       } else if (transaction.isIncome()) {
         await updateCash(_cash - transaction.amount);
@@ -160,6 +168,7 @@ class TransactionsProvider extends ChangeNotifier {
     Map<String, Map<String, int>> products,
     String employee,
     PaymentMethod method,
+    int cashPayment,
   }) async {
     final response = await http.patch(
       Constants.kApiPath + "/transactions/$id.json",
@@ -172,6 +181,7 @@ class TransactionsProvider extends ChangeNotifier {
           "products": products,
           "eid": employee,
           "paymentMethod": CashTransaction.getParsedPaymentMethod(method),
+          "cashPaymentAmount": cashPayment,
         },
       ),
     );
@@ -204,6 +214,7 @@ class TransactionsProvider extends ChangeNotifier {
         amount: amount,
         type: type,
         method: method,
+        cashPayment: cashPayment,
       );
       return true;
     } else {
@@ -237,8 +248,8 @@ class TransactionsProvider extends ChangeNotifier {
         (prev, tran) => tran.date.isAfter(Utils.openDate) &&
                 tran.date.isBefore(Utils.closeDate) &&
                 tran.type == TransactionType.Sell &&
-                tran.paymentMethod == PaymentMethod.Card
-            ? prev + tran.getRealAmount()
+                tran.paymentMethod != PaymentMethod.Cash
+            ? prev + tran.getCardAmount()
             : prev);
   }
 

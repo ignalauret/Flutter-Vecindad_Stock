@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vecindad_stock/components/action_button.dart';
+import 'package:vecindad_stock/components/custom_text_field.dart';
 import 'package:vecindad_stock/components/search_bar.dart';
 import 'package:vecindad_stock/models/cash_transaction.dart';
 import 'package:vecindad_stock/models/product.dart';
@@ -29,9 +30,11 @@ class _NewCartDialogState extends State<NewCartDialog> {
   bool codeError = false;
   bool isEdit = false;
   bool _tapped = false;
+  bool _barPriceSelected = true;
 
   final codeController = TextEditingController();
   final amountController = TextEditingController(text: "1");
+  final cashPaymentController = TextEditingController(text: "0");
 
   PaymentMethod selectedMethod = PaymentMethod.Cash;
 
@@ -67,6 +70,8 @@ class _NewCartDialogState extends State<NewCartDialog> {
           .map((map) => map["price"])
           .toList();
       selectedMethod = widget.editTransaction.paymentMethod;
+      cashPaymentController.text =
+          widget.editTransaction.cashPaymentAmount.toString();
     }
 
     super.didChangeDependencies();
@@ -91,7 +96,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
         } else {
           products.add(product);
           amounts.add(int.parse(amountController.text));
-          prices.add(product.price.floor());
+          prices.add(_barPriceSelected ? product.onBarPrice : product.price);
         }
         codeController.clear();
         amountController.text = "1";
@@ -139,14 +144,13 @@ class _NewCartDialogState extends State<NewCartDialog> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             _buildCodeInput(),
-                            SizedBox(
-                              width: 50,
-                            ),
+                            SizedBox(width: 20),
                             _buildAmountInput(),
-                            SizedBox(
-                              width: 50,
-                            ),
+                            Spacer(),
+                            _buildPriceSelectorsSwitch(),
+                            Spacer(),
                             _buildSubmitButton(),
+                            SizedBox(width: 20),
                           ],
                         ),
                         SizedBox(
@@ -189,6 +193,9 @@ class _NewCartDialogState extends State<NewCartDialog> {
                 ),
                 Spacer(),
                 if (!isEdit) _buildPaymentOptionSelector(),
+                SizedBox(width: 30),
+                if (selectedMethod == PaymentMethod.Mixed && !isEdit)
+                  _buildCashPaymentInput(),
                 Spacer(),
                 Column(
                   children: [
@@ -243,7 +250,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
 
   Container _buildCodeInput() {
     return Container(
-      width: 200,
+      width: 250,
       alignment: Alignment.center,
       child: TextField(
         style: CustomStyles.kNormalStyle,
@@ -279,7 +286,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
 
   Container _buildPaymentOptionSelector() {
     return Container(
-      height: 50,
+      height: 60,
       width: 120,
       alignment: Alignment.center,
       child: DropdownButton<PaymentMethod>(
@@ -305,6 +312,50 @@ class _NewCartDialogState extends State<NewCartDialog> {
     );
   }
 
+  Container _buildCashPaymentInput() {
+    return Container(
+      width: 100,
+      height: 60,
+      child: CustomTextField("Efectivo", cashPaymentController),
+    );
+  }
+
+  Container _buildPriceSelectorsSwitch() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            onTap: () {
+              setState(() {
+                _barPriceSelected = true;
+              });
+            },
+            child: Text(
+              "Bar",
+              style: _barPriceSelected
+                  ? CustomStyles.kAccentTextStyle
+                  : CustomStyles.kNormalStyle,
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              setState(() {
+                _barPriceSelected = false;
+              });
+            },
+            child: Text(
+              "Kiosko",
+              style: _barPriceSelected
+                  ? CustomStyles.kNormalStyle
+                  : CustomStyles.kAccentTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   InkWell _buildSubmitButton() {
     return InkWell(
       onTap: () {
@@ -313,13 +364,10 @@ class _NewCartDialogState extends State<NewCartDialog> {
       child: Container(
         height: 50,
         alignment: Alignment.center,
-        child: Text(
-          "Agregar",
-          style: TextStyle(
-            color: CustomColors.kAccentColor,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Icon(
+          Icons.check_circle,
+          size: 50,
+          color: CustomColors.kAccentColor,
         ),
       ),
     );
@@ -376,7 +424,9 @@ class _NewCartDialogState extends State<NewCartDialog> {
       child: ActionButton(
         label: isEdit ? "Guardar" : "Finalizar",
         fontSize: 25,
-        enabled: products.length > 0 && !_tapped,
+        enabled: products.length > 0 &&
+            !_tapped &&
+            cashPaymentController.text.isNotEmpty,
         onTap: () {
           setState(() {
             _tapped = true;
@@ -399,6 +449,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
               employee: widget.editTransaction.employeeId,
               products: Map<String, Map<String, int>>.fromEntries(cartProducts),
               method: selectedMethod,
+              cashPayment: int.parse(cashPaymentController.text),
             )
                 .then((success) {
               Navigator.of(context).pop(true);
@@ -412,6 +463,7 @@ class _NewCartDialogState extends State<NewCartDialog> {
               amount: totalSum,
               products: Map<String, Map<String, int>>.fromEntries(cartProducts),
               method: selectedMethod,
+              cashPayment: int.parse(cashPaymentController.text),
             )
                 .then((success) {
               //Utils.generatePdf(products, amounts, prices, totalSum);

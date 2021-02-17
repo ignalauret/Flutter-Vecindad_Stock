@@ -18,11 +18,12 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
   final codeController = TextEditingController();
   final nameController = TextEditingController();
   final priceController = TextEditingController();
+  final onBarPriceController = TextEditingController();
   final stockController = TextEditingController(text: "0");
 
   bool codeError = false;
   bool isEdit = false;
-  bool _tapped = true;
+  bool _tapped = false;
 
   @override
   void initState() {
@@ -30,7 +31,8 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
       isEdit = true;
       codeController.text = widget.editProduct.code;
       nameController.text = widget.editProduct.name;
-      priceController.text = widget.editProduct.price.toStringAsFixed(2);
+      priceController.text = widget.editProduct.price.toString();
+      onBarPriceController.text = widget.editProduct.onBarPrice.toString();
       stockController.text = widget.editProduct.stock.toString();
     }
     codeController.addListener(() {
@@ -40,6 +42,9 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
       setState(() {});
     });
     priceController.addListener(() {
+      setState(() {});
+    });
+    onBarPriceController.addListener(() {
       setState(() {});
     });
     stockController.addListener(() {
@@ -60,6 +65,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
             codeController.text,
             nameController.text,
             int.parse(priceController.text),
+            int.parse(onBarPriceController.text),
             int.parse(stockController.text),
           )
           .then((value) {
@@ -82,6 +88,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
               codeController.text,
               nameController.text,
               int.parse(priceController.text),
+              int.parse(onBarPriceController.text),
               int.parse(stockController.text),
             )
             .then((value) {
@@ -96,13 +103,14 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
     return AlertDialog(
       title: DialogHeader(isEdit ? "Editar producto" : "Agregar Producto"),
       content: Container(
-        height: 350,
-        width: 700,
+        height: 300,
+        width: 600,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               height: 100,
-              width: 600,
+              width: 500,
               child: CustomTextField("Nombre", nameController),
             ),
             Row(
@@ -131,15 +139,26 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 Container(
                   height: 100,
                   width: 150,
-                  child: CustomTextField("Precio", priceController),
+                  child: CustomTextField(
+                      isEdit ? "Stock actual" : "Stock Inicial",
+                      stockController),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 100,
+                  width: 150,
+                  child: CustomTextField("Precio Bar", onBarPriceController),
                 ),
                 SizedBox(width: 75),
                 Container(
                   height: 100,
                   width: 150,
-                  child: CustomTextField(
-                      isEdit ? "Stock actual" : "Stock Inicial",
-                      stockController),
+                  child: CustomTextField("Precio Kiosko", priceController),
                 ),
               ],
             ),
@@ -159,6 +178,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 nameController.text.isNotEmpty &&
                 codeController.text.isNotEmpty &&
                 priceController.text.isNotEmpty &&
+                onBarPriceController.text.isNotEmpty &&
                 stockController.text.isNotEmpty,
           ),
         ),

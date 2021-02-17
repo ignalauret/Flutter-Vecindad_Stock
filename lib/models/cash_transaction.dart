@@ -14,7 +14,7 @@ enum TransactionType {
   Service,
   Other
 }
-enum PaymentMethod { Cash, Card }
+enum PaymentMethod { Cash, Card, Mixed }
 
 const Map<TransactionType, String> kTransactionTypesNames = {
   TransactionType.Deposit: "Depósito",
@@ -34,6 +34,7 @@ const Map<TransactionType, String> kTransactionTypesNames = {
 const Map<PaymentMethod, String> kPaymentMethodsNames = {
   PaymentMethod.Cash: "Efectivo",
   PaymentMethod.Card: "Tarjeta",
+  PaymentMethod.Mixed: "Mixto",
 };
 
 class CashTransaction {
@@ -42,6 +43,7 @@ class CashTransaction {
   DateTime date;
   TransactionType type;
   PaymentMethod paymentMethod;
+  int cashPaymentAmount;
   String employeeId;
   double amount;
   Map<String, Map<String, int>> products;
@@ -50,6 +52,7 @@ class CashTransaction {
     this.id,
     this.description,
     @required this.paymentMethod,
+    this.cashPaymentAmount,
     @required this.date,
     @required this.type,
     @required this.employeeId,
@@ -114,6 +117,9 @@ class CashTransaction {
         case "card":
           method = PaymentMethod.Card;
           break;
+        case "mixed":
+          method = PaymentMethod.Mixed;
+          break;
         default:
           method = PaymentMethod.Cash;
       }
@@ -124,6 +130,8 @@ class CashTransaction {
       date: DateTime.parse(json["date"]),
       type: type,
       paymentMethod: method,
+      cashPaymentAmount:
+          json["cashPaymentAmount"] == null ? 0 : json["cashPaymentAmount"],
       employeeId: json["eid"],
       amount: json["amount"] * 1.0,
       products: products,
@@ -168,6 +176,9 @@ class CashTransaction {
       case PaymentMethod.Card:
         return "card";
         break;
+      case PaymentMethod.Mixed:
+        return "mixed";
+        break;
     }
     return null;
   }
@@ -179,6 +190,7 @@ class CashTransaction {
       "date": this.date.toString(),
       "type": getParsedType(this.type),
       "paymentMethod": getParsedPaymentMethod(this.paymentMethod),
+      "cashPaymentAmount": this.cashPaymentAmount,
       "eid": this.employeeId,
       "amount": this.amount,
       "products": this.products,
@@ -224,6 +236,21 @@ class CashTransaction {
   double getRealAmount() {
     if (this.isIncome()) return this.amount;
     return -1 * this.amount;
+  }
+
+  double getCardAmount() {
+    if (this.type != TransactionType.Sell) return 0;
+    switch (this.paymentMethod) {
+      case PaymentMethod.Cash:
+        return 0;
+        break;
+      case PaymentMethod.Card:
+        return this.amount;
+        break;
+      case PaymentMethod.Mixed:
+        return this.amount - this.cashPaymentAmount;
+        break;
+    }
   }
 
   String get typeName {

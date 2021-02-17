@@ -31,27 +31,22 @@ class TransactionDetailDialog extends StatelessWidget {
           children: [
             _buildStat(
                 "Fecha", DateFormat("dd/MM HH:mm").format(transaction.date)),
-            SizedBox(
-              height: 5,
-            ),
+            SizedBox(height: 5),
             _buildStat("Monto", "\$${transaction.amount.toStringAsFixed(2)}"),
-            SizedBox(
-              height: 5,
-            ),
+            SizedBox(height: 5),
             _buildStat("Empleado", transaction.employeeId),
-            SizedBox(
-              height: 5,
-            ),
+            SizedBox(height: 5),
             if (transaction.type != TransactionType.Sell)
               _buildStat(
                   "Descripción", transaction.description ?? "Sin descripción"),
-            SizedBox(
-              height: 4,
-            ),
-            _buildStat("Método de pago", kPaymentMethodsNames[transaction.paymentMethod]),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 4),
+            _buildStat("Método de pago",
+                kPaymentMethodsNames[transaction.paymentMethod]),
+            SizedBox(height: 4),
+            if (transaction.paymentMethod == PaymentMethod.Mixed)
+              _buildStat(
+                  "Pago en Efectivo", "\$${transaction.cashPaymentAmount}"),
+            SizedBox(height: 20),
             if (transaction.type == TransactionType.Sell)
               Consumer<ProductsProvider>(
                 builder: (context, productsData, _) => Container(
@@ -61,8 +56,12 @@ class TransactionDetailDialog extends StatelessWidget {
                     itemBuilder: (context, index) => ProductsCartListItem(
                       productsData.getProductById(
                           transaction.products.keys.toList()[index]),
-                      transaction.products.values.map((map) => map["amount"]).toList()[index],
-                      transaction.products.values.map((map) => map["price"]).toList()[index], //TODO
+                      transaction.products.values
+                          .map((map) => map["amount"])
+                          .toList()[index],
+                      transaction.products.values
+                          .map((map) => map["price"])
+                          .toList()[index], //TODO
                     ),
                     itemCount: transaction.products.length,
                   ),

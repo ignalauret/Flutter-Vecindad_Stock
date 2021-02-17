@@ -3,6 +3,7 @@ class Product {
   String code;
   String name;
   int price;
+  int onBarPrice;
   int stock;
 
   Product({
@@ -10,6 +11,7 @@ class Product {
     this.code,
     this.name,
     this.price,
+    this.onBarPrice,
     this.stock,
   });
 
@@ -19,6 +21,8 @@ class Product {
       code: json["code"],
       name: json["name"],
       price: json["price"],
+      onBarPrice:
+          json["onBarPrice"] == null ? json["price"] : json["onBarPrice"],
       stock: json["stock"],
     );
   }
@@ -28,6 +32,7 @@ class Product {
       "code": this.code,
       "name": this.name,
       "price": this.price,
+      "onBarPrice": this.price,
       "stock": this.stock,
     };
   }
